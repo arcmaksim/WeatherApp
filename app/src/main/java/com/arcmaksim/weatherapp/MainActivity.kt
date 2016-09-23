@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun alertUserAboutError() {
-
+        val alertDialogFragment: AlertDialogFragment = AlertDialogFragment()
+        alertDialogFragment.show(fragmentManager, "error_dialog")
     }
 }
