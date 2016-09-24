@@ -6,4 +6,7 @@
     <string name="error_ok_button_text">OK</string>
     <string name="network_unavailable_message">Network is unavailable!</string>
     <string name="network_data_received_message">Data is successfully received!</string>
+
+    <string name="humidity_label_name">HUMIDITY</string>
+    <string name="rainSnow_label_name">RAIN/SNOW?</string>
 </resources>
