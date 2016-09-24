@@ -1,4 +1,4 @@
-package com.arcmaksim.weatherapp
+package com.arcmaksim.weatherapp.ui.activities
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
+import com.arcmaksim.weatherapp.R
+import com.arcmaksim.weatherapp.ui.fragments.AlertDialogFragment
 import okhttp3.*
 import java.io.IOException
 

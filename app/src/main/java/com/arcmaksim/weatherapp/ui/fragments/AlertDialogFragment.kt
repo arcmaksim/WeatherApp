@@ -1,10 +1,11 @@
-package com.arcmaksim.weatherapp
+package com.arcmaksim.weatherapp.ui.fragments
 
 import android.app.AlertDialog
 import android.app.Dialog
 import android.app.DialogFragment
 import android.content.Context
 import android.os.Bundle
+import com.arcmaksim.weatherapp.R
 
 class AlertDialogFragment : DialogFragment() {
 
