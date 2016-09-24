@@ -7,14 +7,18 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
+import com.arcmaksim.weatherapp.model.CurrentWeather
 import com.arcmaksim.weatherapp.R
 import com.arcmaksim.weatherapp.ui.fragments.AlertDialogFragment
 import okhttp3.*
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
     val TAG: String = "MainActivity"
+    var mCurrentWeather: CurrentWeather? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,12 +52,17 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onResponse(call: Call?, response: Response?) {
                     try {
-                        Log.v(TAG, response?.body()?.string())
-                        if (!response?.isSuccessful!!) {
+                        val jsonData: String? = response?.body()?.string()
+                        Log.v(TAG, jsonData)
+                        if (response?.isSuccessful!!) {
+                            mCurrentWeather = getWeatherDetails(jsonData)
+                        } else {
                             alertUserAboutError()
                         }
                     } catch (e: IOException) {
-                        e.printStackTrace()
+                        Log.e(TAG, "Exception caught:", e)
+                    } catch (e: JSONException) {
+                        Log.e(TAG, "Exception caught:", e)
                     }
                 }
 
@@ -65,13 +74,29 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    @Throws(JSONException::class)
+    private fun getWeatherDetails(jsonData: String?): CurrentWeather {
+        val forecast: JSONObject = JSONObject(jsonData)
+        val timezone: String = forecast.getString("timezone")
+        Log.i(TAG, "From JSON" + timezone)
+
+        val currently: JSONObject = forecast.getJSONObject("currently")
+        val currentWeather: CurrentWeather = CurrentWeather(currently.getLong("time"))
+        currentWeather.mTemp = currently.getDouble("temperature")
+        currentWeather.mIcon = currently.getString("icon")
+        currentWeather.mHumidity = currently.getDouble("humidity")
+        currentWeather.mPrecipChance = currently.getDouble("precipProbability")
+        currentWeather.mSummary = currently.getString("summary")
+        currentWeather.mTimezone = timezone
+        Log.i("Current weather time", currentWeather.getFormattedTime())
+
+        return currentWeather
+    }
+
     private fun isNetworkAvailable(): Boolean {
         val manager: ConnectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo: NetworkInfo? = manager.activeNetworkInfo
-        var isAvailable: Boolean = false
-        if (networkInfo != null) {
-            isAvailable = true
-        }
+        val isAvailable: Boolean = networkInfo?.isConnected ?: false
         return isAvailable
     }
 
