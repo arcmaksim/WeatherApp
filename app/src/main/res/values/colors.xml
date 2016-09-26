@@ -3,6 +3,12 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
     <color name="backgroundColor">#FC970B</color>
+
     <color name="semitransparentTextColor">#80FFFFFF</color>
+    <color name="semitransparentBackgroundColor">#40FFFFFF</color>
+
+    <color name="gradientStartColor">#F9D34C</color>
+    <color name="gradientEndColor">#F25019</color>
 </resources>
