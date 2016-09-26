@@ -16,7 +16,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import com.arcmaksim.weatherapp.R
-import com.arcmaksim.weatherapp.model.CurrentWeather
+import com.arcmaksim.weatherapp.model.Current
 import com.arcmaksim.weatherapp.ui.fragments.AlertDialogFragment
 import okhttp3.*
 import org.json.JSONException
@@ -26,7 +26,7 @@ import java.io.IOException
 class MainActivity : AppCompatActivity() {
 
     val TAG: String = "MainActivity"
-    lateinit var mCurrentWeather: CurrentWeather
+    lateinit var mCurrent: Current
 
     @BindView(R.id.temperatureLabel)
     lateinit var mTemperatureView: TextView
@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
                         val jsonData: String? = response?.body()?.string()
                         Log.v(TAG, jsonData)
                         if (response?.isSuccessful!!) {
-                            mCurrentWeather = getWeatherDetails(jsonData)
+                            mCurrent = getWeatherDetails(jsonData)
                             runOnUiThread { updateDisplay() }
                         } else {
                             alertUserAboutError()
@@ -122,35 +122,35 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateDisplay() {
-        mTemperatureView.text = mCurrentWeather.getTemperature().toString()
+        mTemperatureView.text = mCurrent.getTemperature().toString()
         val stringBuilder: StringBuilder = StringBuilder()
         var timeLabelString: String = resources.getString(R.string.timeLabelText)
-        timeLabelString = String.format(timeLabelString, mCurrentWeather.getFormattedTime())
+        timeLabelString = String.format(timeLabelString, mCurrent.getFormattedTime())
         mTimeView.text = timeLabelString
-        mHumidityView.text = mCurrentWeather.mHumidity.toString()
-        stringBuilder.append(mCurrentWeather.getPrecipChance())
+        mHumidityView.text = mCurrent.mHumidity.toString()
+        stringBuilder.append(mCurrent.getPrecipChance())
                 .append("%")
         mPrecipView.text = stringBuilder
-        mSummaryView.text = mCurrentWeather.mSummary
-        mIconView.setImageDrawable(ResourcesCompat.getDrawable(resources, mCurrentWeather.getIconId(), null))
+        mSummaryView.text = mCurrent.mSummary
+        mIconView.setImageDrawable(ResourcesCompat.getDrawable(resources, mCurrent.getIconId(), null))
     }
 
     @Throws(JSONException::class)
-    private fun getWeatherDetails(jsonData: String?): CurrentWeather {
+    private fun getWeatherDetails(jsonData: String?): Current {
         val forecast: JSONObject = JSONObject(jsonData)
         val timezone: String = forecast.getString("timezone")
 
         val currently: JSONObject = forecast.getJSONObject("currently")
-        val currentWeather: CurrentWeather = CurrentWeather()
-        currentWeather.mTime = currently.getLong("time")
-        currentWeather.mTemperature = currently.getDouble("temperature")
-        currentWeather.mIcon = currently.getString("icon")
-        currentWeather.mHumidity = currently.getDouble("humidity")
-        currentWeather.mPrecipChance = currently.getDouble("precipProbability")
-        currentWeather.mSummary = currently.getString("summary")
-        currentWeather.mTimezone = timezone
+        val current: Current = Current()
+        current.mTime = currently.getLong("time")
+        current.mTemperature = currently.getDouble("temperature")
+        current.mIcon = currently.getString("icon")
+        current.mHumidity = currently.getDouble("humidity")
+        current.mPrecipChance = currently.getDouble("precipProbability")
+        current.mSummary = currently.getString("summary")
+        current.mTimezone = timezone
 
-        return currentWeather
+        return current
     }
 
     private fun isNetworkAvailable(): Boolean {

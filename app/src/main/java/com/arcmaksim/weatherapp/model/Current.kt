@@ -4,7 +4,7 @@ import com.arcmaksim.weatherapp.R
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CurrentWeather() {
+class Current() {
 
     var mTime: Long = 0
     lateinit var mIcon: String
