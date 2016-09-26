@@ -6,6 +6,8 @@ Supported versions of Android:
 - Minimum: Android 4.1.x (API 16)
 - Target: Android 7.0 (API 24)
 
+Weather data provider: https://darksky.net
+
 Used libraries:
 - OkHttp 3.4.1
 https://github.com/square/okhttp
