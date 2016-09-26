@@ -1,6 +1,8 @@
 package com.arcmaksim.weatherapp.ui.activities
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
@@ -164,6 +166,16 @@ class MainActivity : AppCompatActivity() {
         mForecast.mHourlyForecast = getHourlyDetails(jsonData)
         mForecast.mDailyForecast = getDailyForecast(jsonData)
         return forecast
+    }
+
+    inline fun <reified T : Activity> Activity.navigate() {
+        val intent = Intent(this, T::class.java)
+        startActivity(intent)
+    }
+
+    @OnClick(R.id.dailyButton)
+    private fun startDailyActivity() {
+        navigate<DailyForecastActivity>()
     }
 
     private fun getDailyForecast(jsonData: String?): Array<Day> {
