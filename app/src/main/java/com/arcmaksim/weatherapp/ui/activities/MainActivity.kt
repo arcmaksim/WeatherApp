@@ -17,8 +17,12 @@ import butterknife.ButterKnife
 import butterknife.OnClick
 import com.arcmaksim.weatherapp.R
 import com.arcmaksim.weatherapp.model.Current
+import com.arcmaksim.weatherapp.model.Day
+import com.arcmaksim.weatherapp.model.Forecast
+import com.arcmaksim.weatherapp.model.Hour
 import com.arcmaksim.weatherapp.ui.fragments.AlertDialogFragment
 import okhttp3.*
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
@@ -26,7 +30,7 @@ import java.io.IOException
 class MainActivity : AppCompatActivity() {
 
     val TAG: String = "MainActivity"
-    lateinit var mCurrent: Current
+    lateinit var mForecast: Forecast
 
     @BindView(R.id.temperatureLabel)
     lateinit var mTemperatureView: TextView
@@ -92,7 +96,7 @@ class MainActivity : AppCompatActivity() {
                         val jsonData: String? = response?.body()?.string()
                         Log.v(TAG, jsonData)
                         if (response?.isSuccessful!!) {
-                            mCurrent = getWeatherDetails(jsonData)
+                            mForecast = parseForecastDetails(jsonData)
                             runOnUiThread { updateDisplay() }
                         } else {
                             alertUserAboutError()
@@ -122,17 +126,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateDisplay() {
-        mTemperatureView.text = mCurrent.getTemperature().toString()
+        mTemperatureView.text = mForecast.mCurrent.getTemperature().toString()
         val stringBuilder: StringBuilder = StringBuilder()
         var timeLabelString: String = resources.getString(R.string.timeLabelText)
-        timeLabelString = String.format(timeLabelString, mCurrent.getFormattedTime())
+        timeLabelString = String.format(timeLabelString, mForecast.mCurrent.getFormattedTime())
         mTimeView.text = timeLabelString
-        mHumidityView.text = mCurrent.mHumidity.toString()
-        stringBuilder.append(mCurrent.getPrecipChance())
+        mHumidityView.text = mForecast.mCurrent.mHumidity.toString()
+        stringBuilder.append(mForecast.mCurrent.getPrecipChance())
                 .append("%")
         mPrecipView.text = stringBuilder
-        mSummaryView.text = mCurrent.mSummary
-        mIconView.setImageDrawable(ResourcesCompat.getDrawable(resources, mCurrent.getIconId(), null))
+        mSummaryView.text = mForecast.mCurrent.mSummary
+        mIconView.setImageDrawable(ResourcesCompat.getDrawable(resources, mForecast.mCurrent.getIconId(), null))
     }
 
     @Throws(JSONException::class)
@@ -151,6 +155,50 @@ class MainActivity : AppCompatActivity() {
         current.mTimezone = timezone
 
         return current
+    }
+
+    @Throws(JSONException::class)
+    private fun parseForecastDetails(jsonData: String?): Forecast {
+        val forecast: Forecast = Forecast()
+        mForecast.mCurrent = getWeatherDetails(jsonData)
+        mForecast.mHourlyForecast = getHourlyDetails(jsonData)
+        mForecast.mDailyForecast = getDailyForecast(jsonData)
+        return forecast
+    }
+
+    private fun getDailyForecast(jsonData: String?): Array<Day> {
+        val forecast: JSONObject = JSONObject(jsonData)
+        val timezone: String = forecast.getString("timezone")
+        val data: JSONArray = forecast.getJSONObject("daily").getJSONArray("data")
+        var dailyForecast: Array<Day> = Array(data.length()) {Day()}
+
+        for (i in 0..data.length()) {
+            val record: JSONObject = data.getJSONObject(i)
+            dailyForecast[i].mSummary = record.getString("summary")
+            dailyForecast[i].mTemperatureMax = record.getString("temperatureMax").toDouble()
+            dailyForecast[i].mIconId = record.getString("icon")
+            dailyForecast[i].mTimezone = timezone
+            dailyForecast[i].mTime = record.getString("time").toLong()
+        }
+
+        return dailyForecast
+    }
+
+    private fun getHourlyDetails(jsonData: String?): Array<Hour> {
+        val forecast: JSONObject = JSONObject(jsonData)
+        val timezone: String = forecast.getString("timezone")
+        val data: JSONArray = forecast.getJSONObject("hourly").getJSONArray("data")
+        var hourlyForecast: Array<Hour> = Array(data.length()) {Hour()}
+
+        for (i in 0..data.length()) {
+            val record: JSONObject = data.getJSONObject(i)
+            hourlyForecast[i].mSummary = record.getString("summary")
+            hourlyForecast[i].mTemperature = record.getString("temperature").toDouble()
+            hourlyForecast[i].mTimezone = timezone
+            hourlyForecast[i].mIconId = record.getString("icon")
+            hourlyForecast[i].mTime = record.getString("time").toLong()
+        }
+        return hourlyForecast
     }
 
     private fun isNetworkAvailable(): Boolean {
