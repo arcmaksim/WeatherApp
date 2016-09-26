@@ -1,18 +1,18 @@
 package com.arcmaksim.weatherapp.model
 
-import android.util.Log
 import com.arcmaksim.weatherapp.R
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CurrentWeather(var mTime: Long) {
+class CurrentWeather() {
 
-    var mIcon: String? = null
-    var mTemp: Double? = null
-    var mHumidity: Double? = null
-    var mPrecipChance: Double? = null
-    var mSummary: String? = null
-    var mTimezone: String? = null
+    var mTime: Long = 0
+    lateinit var mIcon: String
+    var mTemperature: Double = 0.0
+    var mHumidity: Double = 0.0
+    var mPrecipChance: Double = 0.0
+    lateinit var mSummary: String
+    lateinit var mTimezone: String
 
     fun getFormattedTime(): String {
         val formatter: SimpleDateFormat = SimpleDateFormat("HH:mm")
@@ -37,6 +37,18 @@ class CurrentWeather(var mTime: Long) {
             else -> iconID = R.mipmap.clear_day
         }
         return iconID
+    }
+
+    fun getTemperature(): Int {
+        return convertFahrenheitToCelcius(Math.round(mTemperature).toInt())
+    }
+
+    fun convertFahrenheitToCelcius(temperatureInFahrenheit: Int) : Int {
+        return ((temperatureInFahrenheit - 32) * 5 / 9)
+    }
+
+    fun getPrecipChance(): Int {
+        return Math.round(mPrecipChance * 100).toInt()
     }
 
 }

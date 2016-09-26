@@ -14,7 +14,7 @@
     android:background="@color/backgroundColor">
 
     <TextView
-        android:text="100"
+        android:text="@string/defaultNumberLabel"
         android:textColor="@android:color/white"
         android:textSize="150sp"
         android:layout_width="wrap_content"
@@ -31,10 +31,11 @@
         android:layout_alignTop="@+id/temperatureLabel"
         android:layout_toRightOf="@+id/temperatureLabel"
         android:layout_toEndOf="@+id/temperatureLabel"
-        android:id="@+id/degreeImageView"/>
+        android:id="@+id/degreeImageView"
+        android:contentDescription="@string/degreeImageViewContentDesc"/>
 
     <TextView
-        android:text="At 5 pm it will be"
+        android:text="@string/defaultTimeLabel"
         android:textSize="18sp"
         android:textColor="@color/semitransparentTextColor"
         android:layout_width="wrap_content"
@@ -44,7 +45,7 @@
         android:layout_centerHorizontal="true"/>
 
     <TextView
-        android:text="Saint-Petersburg"
+        android:text="@string/defaultCityLabel"
         android:textColor="@android:color/white"
         android:textSize="24sp"
         android:layout_marginBottom="60dp"
@@ -60,7 +61,9 @@
         app:srcCompat="@mipmap/cloudy_night"
         android:layout_alignBottom="@+id/locationLabel"
         android:layout_alignParentLeft="true"
-        android:id="@+id/iconImageView"/>
+        android:layout_alignParentStart="true"
+        android:id="@+id/iconImageView"
+        android:contentDescription="@string/iconImageViewContentDesc"/>
 
     <LinearLayout
         android:id="@+id/mainLinearLayout"
@@ -88,7 +91,7 @@
                 android:gravity="center_horizontal"/>
 
             <TextView
-                android:text="0.86"
+                android:text="@string/defaultNumberLabel"
                 android:textSize="24sp"
                 android:textColor="@android:color/white"
                 android:layout_width="match_parent"
@@ -113,7 +116,7 @@
                 android:gravity="center_horizontal"/>
 
             <TextView
-                android:text="100%"
+                android:text="@string/defaultNumberLabel"
                 android:textSize="24sp"
                 android:textColor="@android:color/white"
                 android:layout_width="match_parent"
@@ -125,7 +128,7 @@
     </LinearLayout>
 
     <TextView
-        android:text="Stormy with a chance of meatballs"
+        android:text="@string/default_summary"
         android:textSize="18sp"
         android:textColor="@android:color/white"
         android:layout_marginTop="40dp"
@@ -135,5 +138,24 @@
         android:layout_below="@id/mainLinearLayout"
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@mipmap/refresh"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/refreshImageView"
+        android:contentDescription="@string/refreshImageViewContentDesc"/>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/refreshImageView"
+        android:visibility="invisible"
+        android:id="@+id/progressBar"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>
