@@ -1,4 +1,4 @@
-package com.arcmaksim.weatherapp.model
+package com.arcmaksim.weatherapp.models
 
 class Hour() {
     var mTime: Long = 0

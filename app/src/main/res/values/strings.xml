@@ -24,6 +24,7 @@
     <string name="iconImageViewContentDesc">Icon for current weather</string>
     <string name="refreshImageViewContentDesc">Refresh button</string>
     <string name="degreeImageViewContentDesc">Degree icon</string>
+    <string name="circleImageViewContentDesc">Background for temperature</string>
 
     <string name="no_daily_forecast_data">There is no data to display.</string>
 </resources>

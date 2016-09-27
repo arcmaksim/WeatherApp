@@ -18,10 +18,10 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import com.arcmaksim.weatherapp.R
-import com.arcmaksim.weatherapp.model.Current
-import com.arcmaksim.weatherapp.model.Day
-import com.arcmaksim.weatherapp.model.Forecast
-import com.arcmaksim.weatherapp.model.Hour
+import com.arcmaksim.weatherapp.models.Current
+import com.arcmaksim.weatherapp.models.Day
+import com.arcmaksim.weatherapp.models.Forecast
+import com.arcmaksim.weatherapp.models.Hour
 import com.arcmaksim.weatherapp.ui.fragments.AlertDialogFragment
 import okhttp3.*
 import org.json.JSONArray
@@ -89,11 +89,11 @@ class MainActivity : AppCompatActivity() {
             val call: Call = okHttpClient.newCall(request)
             call.enqueue(object : Callback {
                 override fun onFailure(call: Call?, e: IOException?) {
-                    runOnUiThread { toggleRefresh()}
+                    runOnUiThread { toggleRefresh() }
                 }
 
                 override fun onResponse(call: Call?, response: Response?) {
-                    runOnUiThread { toggleRefresh()}
+                    runOnUiThread { toggleRefresh() }
                     try {
                         val jsonData: String? = response?.body()?.string()
                         Log.v(TAG, jsonData)
@@ -133,7 +133,10 @@ class MainActivity : AppCompatActivity() {
         var timeLabelString: String = resources.getString(R.string.timeLabelText)
         timeLabelString = String.format(timeLabelString, mForecast.mCurrent.getFormattedTime())
         mTimeView.text = timeLabelString
-        mHumidityView.text = mForecast.mCurrent.mHumidity.toString()
+        stringBuilder.append(mForecast.mCurrent.getHumidity())
+                .append("%")
+        mHumidityView.text = stringBuilder
+        stringBuilder.setLength(0)
         stringBuilder.append(mForecast.mCurrent.getPrecipChance())
                 .append("%")
         mPrecipView.text = stringBuilder
@@ -162,9 +165,9 @@ class MainActivity : AppCompatActivity() {
     @Throws(JSONException::class)
     private fun parseForecastDetails(jsonData: String?): Forecast {
         val forecast: Forecast = Forecast()
-        mForecast.mCurrent = getWeatherDetails(jsonData)
-        mForecast.mHourlyForecast = getHourlyDetails(jsonData)
-        mForecast.mDailyForecast = getDailyForecast(jsonData)
+        forecast.mCurrent = getWeatherDetails(jsonData)
+        forecast.mHourlyForecast = getHourlyDetails(jsonData)
+        forecast.mDailyForecast = getDailyForecast(jsonData)
         return forecast
     }
 
@@ -174,7 +177,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @OnClick(R.id.dailyButton)
-    private fun startDailyActivity() {
+    fun startDailyActivity() {
         navigate<DailyForecastActivity>()
     }
 
@@ -182,9 +185,9 @@ class MainActivity : AppCompatActivity() {
         val forecast: JSONObject = JSONObject(jsonData)
         val timezone: String = forecast.getString("timezone")
         val data: JSONArray = forecast.getJSONObject("daily").getJSONArray("data")
-        var dailyForecast: Array<Day> = Array(data.length()) {Day()}
+        val dailyForecast: Array<Day> = Array(data.length()) {Day()}
 
-        for (i in 0..data.length()) {
+        for (i in 0..data.length()-1) {
             val record: JSONObject = data.getJSONObject(i)
             dailyForecast[i].mSummary = record.getString("summary")
             dailyForecast[i].mTemperatureMax = record.getString("temperatureMax").toDouble()
@@ -200,9 +203,9 @@ class MainActivity : AppCompatActivity() {
         val forecast: JSONObject = JSONObject(jsonData)
         val timezone: String = forecast.getString("timezone")
         val data: JSONArray = forecast.getJSONObject("hourly").getJSONArray("data")
-        var hourlyForecast: Array<Hour> = Array(data.length()) {Hour()}
+        val hourlyForecast: Array<Hour> = Array(data.length()) {Hour()}
 
-        for (i in 0..data.length()) {
+        for (i in 0..data.length()-1) {
             val record: JSONObject = data.getJSONObject(i)
             hourlyForecast[i].mSummary = record.getString("summary")
             hourlyForecast[i].mTemperature = record.getString("temperature").toDouble()

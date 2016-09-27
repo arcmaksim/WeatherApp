@@ -1,4 +1,4 @@
-package com.arcmaksim.weatherapp.model
+package com.arcmaksim.weatherapp.models
 
 import com.arcmaksim.weatherapp.R
 import java.text.SimpleDateFormat
@@ -49,6 +49,10 @@ class Current() {
 
     fun getPrecipChance(): Int {
         return Math.round(mPrecipChance * 100).toInt()
+    }
+
+    fun getHumidity(): Int {
+        return Math.round(mHumidity* 100).toInt()
     }
 
 }

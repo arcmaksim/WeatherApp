@@ -11,4 +11,7 @@
 
     <color name="gradientStartColor">#F9D34C</color>
     <color name="gradientEndColor">#F25019</color>
+
+    <color name="dailyListItemBackground">#FFAA00</color>
+    <color name="dailyListItemTemperatureText">#F25019</color>
 </resources>
