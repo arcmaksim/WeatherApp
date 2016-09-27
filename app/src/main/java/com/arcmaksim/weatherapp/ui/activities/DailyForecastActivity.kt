@@ -19,6 +19,7 @@ class DailyForecastActivity : ListActivity() {
         val parcelables: Array<Parcelable> = intent.getParcelableArrayExtra(MainActivity.DAILY_FORECAST)
         mDays = Arrays.copyOf(parcelables, parcelables.size, Array<Day>::class.java)
         val adapter: DayAdapter = DayAdapter(this, mDays)
+        listAdapter = adapter
     }
 
 }

@@ -13,7 +13,7 @@
     android:background="@drawable/bg_gradient">
 
     <TextView
-        android:text="@string/defaultNumberLabel"
+        android:text="@string/default_number_label"
         android:textColor="@android:color/white"
         android:textSize="150sp"
         android:layout_width="wrap_content"
@@ -31,10 +31,10 @@
         android:layout_toRightOf="@+id/temperatureLabel"
         android:layout_toEndOf="@+id/temperatureLabel"
         android:id="@+id/degreeImageView"
-        android:contentDescription="@string/degreeImageViewContentDesc"/>
+        android:contentDescription="@string/degree_image_view_content_desc"/>
 
     <TextView
-        android:text="@string/defaultTimeLabel"
+        android:text="@string/default_time_label"
         android:textSize="18sp"
         android:textColor="@color/semitransparentTextColor"
         android:layout_width="wrap_content"
@@ -44,7 +44,7 @@
         android:layout_centerHorizontal="true"/>
 
     <TextView
-        android:text="@string/defaultCityLabel"
+        android:text="@string/default_location_label"
         android:textColor="@android:color/white"
         android:textSize="24sp"
         android:layout_marginBottom="60dp"
@@ -62,7 +62,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:id="@+id/iconImageView"
-        android:contentDescription="@string/iconImageViewContentDesc"/>
+        android:contentDescription="@string/icon_image_view_content_desc"/>
 
     <LinearLayout
         android:id="@+id/mainLinearLayout"
@@ -90,7 +90,7 @@
                 android:gravity="center_horizontal"/>
 
             <TextView
-                android:text="@string/defaultNumberLabel"
+                android:text="@string/default_number_label"
                 android:textSize="24sp"
                 android:textColor="@android:color/white"
                 android:layout_width="match_parent"
@@ -115,7 +115,7 @@
                 android:gravity="center_horizontal"/>
 
             <TextView
-                android:text="@string/defaultNumberLabel"
+                android:text="@string/default_number_label"
                 android:textSize="24sp"
                 android:textColor="@android:color/white"
                 android:layout_width="match_parent"
@@ -145,7 +145,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:id="@+id/refreshImageView"
-        android:contentDescription="@string/refreshImageViewContentDesc"/>
+        android:contentDescription="@string/refresh_image_view_content_desc"/>
 
     <ProgressBar
         style="?android:attr/progressBarStyle"

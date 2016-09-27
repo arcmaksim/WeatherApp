@@ -76,9 +76,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun getForecast() {
-        val apiKey: String = resources.getString(R.string.apiKey)
-        val latitude: String = resources.getString(R.string.defaultAddressLatitude)
-        val longitude: String = resources.getString(R.string.defaultAddressLongitude)
+        val apiKey: String = resources.getString(R.string.api_key)
+        val latitude: String = resources.getString(R.string.default_address_latitude)
+        val longitude: String = resources.getString(R.string.default_address_longitude)
         var url: String = resources.getString(R.string.url)
         url = String.format(url, apiKey, latitude, longitude)
 
@@ -134,7 +134,7 @@ class MainActivity : AppCompatActivity() {
     private fun updateDisplay() {
         mTemperatureView.text = mForecast.mCurrent.getTemperature().toString()
         val stringBuilder: StringBuilder = StringBuilder()
-        var timeLabelString: String = resources.getString(R.string.timeLabelText)
+        var timeLabelString: String = resources.getString(R.string.time_label_text)
         timeLabelString = String.format(timeLabelString, mForecast.mCurrent.getFormattedTime())
         mTimeView.text = timeLabelString
         stringBuilder.append(mForecast.mCurrent.getHumidity())

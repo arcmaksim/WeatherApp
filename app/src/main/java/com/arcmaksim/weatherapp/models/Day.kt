@@ -60,7 +60,7 @@ class Day() : Parcelable {
             mSummary = parcel.readString()
             mTemperatureMax = parcel.readDouble()
             mIconId = parcel.readString()
-            mTime = parcel.readLong()
+            mTimezone = parcel.readString()
         }
     }
 

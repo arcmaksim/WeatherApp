@@ -7,24 +7,25 @@
     <string name="network_unavailable_message">Network is unavailable!</string>
     <string name="network_data_received_message">Data is successfully received!</string>
 
-    <string name="apiKey">0477e00681642c3961f2e5621998ce85</string>
+    <string name="api_key">0477e00681642c3961f2e5621998ce85</string>
     <string name="url">https://api.darksky.net/forecast/%1$s/%2$s,%3$s</string>
 
     <string name="humidity_label_name">HUMIDITY</string>
     <string name="rainSnow_label_name">RAIN/SNOW?</string>
-    <string name="timeLabelText">At %1$s it will be</string>
+    <string name="time_label_text">At %1$s it will be</string>
 
     <string name="default_summary">Getting current data…</string>
-    <string name="defaultAddressLatitude">59.941607</string>
-    <string name="defaultAddressLongitude">30.467906</string>
-    <string name="defaultNumberLabel">--</string>
-    <string name="defaultTimeLabel">…</string>
-    <string name="defaultCityLabel">Saint-Petersburg</string>
+    <string name="default_address_latitude">59.941607</string>
+    <string name="default_address_longitude">30.467906</string>
+    <string name="default_number_label">--</string>
+    <string name="default_time_label">…</string>
+    <string name="default_location_label">Saint-Petersburg</string>
 
-    <string name="iconImageViewContentDesc">Icon for current weather</string>
-    <string name="refreshImageViewContentDesc">Refresh button</string>
-    <string name="degreeImageViewContentDesc">Degree icon</string>
-    <string name="circleImageViewContentDesc">Background for temperature</string>
+    <string name="icon_image_view_content_desc">Icon for current weather</string>
+    <string name="refresh_image_view_content_desc">Refresh button</string>
+    <string name="degree_image_view_content_desc">Degree icon</string>
+    <string name="circle_image_view_content_desc">Background for temperature</string>
 
     <string name="no_daily_forecast_data">There is no data to display.</string>
+    <string name="this_week">This Week\'s Weather</string>
 </resources>
