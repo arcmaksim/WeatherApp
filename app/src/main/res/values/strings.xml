@@ -8,7 +8,7 @@
     <string name="network_data_received_message">Data is successfully received!</string>
 
     <string name="apiKey">0477e00681642c3961f2e5621998ce85</string>
-    <string name="url">https://api.darksky.net/forecast/%1$s/%1$s,%1$s</string>
+    <string name="url">https://api.darksky.net/forecast/%1$s/%2$s,%3$s</string>
 
     <string name="humidity_label_name">HUMIDITY</string>
     <string name="rainSnow_label_name">RAIN/SNOW?</string>
