@@ -31,7 +31,11 @@ import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
-    val TAG: String = "MainActivity"
+    companion object {
+        val TAG: String = "MainActivity"
+        val DAILY_FORECAST: String = "DAILY_FORECAST"
+    }
+
     lateinit var mForecast: Forecast
 
     @BindView(R.id.temperatureLabel)
@@ -171,14 +175,15 @@ class MainActivity : AppCompatActivity() {
         return forecast
     }
 
-    inline fun <reified T : Activity> Activity.navigate() {
+    inline fun <reified T : Activity> Activity.navigate(data: Array<Day>) {
         val intent = Intent(this, T::class.java)
+        intent.putExtra(DAILY_FORECAST, data)
         startActivity(intent)
     }
 
     @OnClick(R.id.dailyButton)
     fun startDailyActivity() {
-        navigate<DailyForecastActivity>()
+        navigate<DailyForecastActivity>(mForecast.mDailyForecast)
     }
 
     private fun getDailyForecast(jsonData: String?): Array<Day> {

@@ -1,6 +1,5 @@
 package com.arcmaksim.weatherapp.models
 
-import com.arcmaksim.weatherapp.R
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -22,29 +21,11 @@ class Current() {
     }
 
     fun getIconId(): Int {
-        val iconID: Int
-        when(mIcon) {
-            "clear-day" -> iconID = R.mipmap.clear_day
-            "clear-night" -> iconID = R.mipmap.clear_night
-            "rain" -> iconID = R.mipmap.rain
-            "snow" -> iconID = R.mipmap.snow
-            "sleet" -> iconID = R.mipmap.sleet
-            "wind" -> iconID = R.mipmap.wind
-            "fog" -> iconID = R.mipmap.fog
-            "cloudy" -> iconID = R.mipmap.cloudy
-            "partly_cloudy" -> iconID = R.mipmap.partly_cloudy
-            "cloudy_night" -> iconID = R.mipmap.cloudy_night
-            else -> iconID = R.mipmap.clear_day
-        }
-        return iconID
+        return Forecast.getIconId(mIcon)
     }
 
     fun getTemperature(): Int {
-        return convertFahrenheitToCelcius(Math.round(mTemperature).toInt())
-    }
-
-    fun convertFahrenheitToCelcius(temperatureInFahrenheit: Int) : Int {
-        return ((temperatureInFahrenheit - 32) * 5 / 9)
+        return Forecast.convertFahrenheitToCelcius(Math.round(mTemperature).toInt())
     }
 
     fun getPrecipChance(): Int {
