@@ -22,6 +22,8 @@
         </activity>
         <activity android:name=".ui.activities.DailyForecastActivity">
         </activity>
+        <activity android:name=".ui.activities.HourlyForecastActivity">
+        </activity>
     </application>
 
 </manifest>

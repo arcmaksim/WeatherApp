@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         val TAG: String = "MainActivity"
         val DAILY_FORECAST: String = "DAILY_FORECAST"
-        val DAILY_FORECAST_IS_EMPTY: String = "DAILY_FORECAST_IS_EMPTY"
+        val HOURLY_FORECAST: String = "HOURLY_FORECAST"
     }
 
     var mForecast: Forecast? = null
@@ -186,6 +186,15 @@ class MainActivity : AppCompatActivity() {
     fun startDailyActivity() {
         if (mForecast != null) {
             navigate<DailyForecastActivity>(mForecast?.mDailyForecast)
+        } else {
+            Toast.makeText(this, R.string.no_data_yet_message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    @OnClick(R.id.hourlyButton)
+    fun startHourlyActivity() {
+        if (mForecast != null) {
+            navigate<HourlyForecastActivity>(mForecast?.mDailyForecast)
         } else {
             Toast.makeText(this, R.string.no_data_yet_message, Toast.LENGTH_SHORT).show()
         }

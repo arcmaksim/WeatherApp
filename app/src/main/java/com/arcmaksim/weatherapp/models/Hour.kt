@@ -1,6 +1,24 @@
 package com.arcmaksim.weatherapp.models
 
-class Hour() {
+import android.os.Parcel
+import android.os.Parcelable
+
+class Hour() : Parcelable {
+
+    companion object {
+        @JvmField
+        val CREATOR: Parcelable.Creator<Hour> = object : Parcelable.Creator<Hour> {
+            override fun createFromParcel(p0: Parcel?): Hour {
+                return Hour(p0)
+            }
+
+            override fun newArray(size: Int): Array<out Hour> {
+                return Array(size) {Hour()}
+            }
+
+        }
+    }
+
     var mTime: Long = 0
     lateinit var mSummary: String
     var mTemperature: Double = 0.0
@@ -13,5 +31,27 @@ class Hour() {
 
     fun convertFahrenheitToCelcius(temperatureInFahrenheit: Int) : Int {
         return ((temperatureInFahrenheit - 32) * 5 / 9)
+    }
+
+    override fun writeToParcel(p0: Parcel?, p1: Int) {
+        p0?.writeLong(mTime)
+        p0?.writeString(mSummary)
+        p0?.writeDouble(mTemperature)
+        p0?.writeString(mIconId)
+        p0?.writeString(mTimezone)
+    }
+
+    override fun describeContents(): Int {
+        return 0;
+    }
+
+    private constructor(parcel: Parcel?): this() {
+        if (parcel != null) {
+            mTime = parcel.readLong()
+            mSummary = parcel.readString()
+            mTemperature = parcel.readDouble()
+            mIconId = parcel.readString()
+            mTimezone = parcel.readString()
+        }
     }
 }
