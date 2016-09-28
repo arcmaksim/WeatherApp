@@ -34,9 +34,10 @@ class MainActivity : AppCompatActivity() {
     companion object {
         val TAG: String = "MainActivity"
         val DAILY_FORECAST: String = "DAILY_FORECAST"
+        val DAILY_FORECAST_IS_EMPTY: String = "DAILY_FORECAST_IS_EMPTY"
     }
 
-    lateinit var mForecast: Forecast
+    var mForecast: Forecast? = null
 
     @BindView(R.id.temperatureLabel)
     lateinit var mTemperatureView: TextView
@@ -132,20 +133,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateDisplay() {
-        mTemperatureView.text = mForecast.mCurrent.getTemperature().toString()
+        mTemperatureView.text = mForecast!!.mCurrent.getTemperature().toString()
         val stringBuilder: StringBuilder = StringBuilder()
         var timeLabelString: String = resources.getString(R.string.time_label_text)
-        timeLabelString = String.format(timeLabelString, mForecast.mCurrent.getFormattedTime())
+        timeLabelString = String.format(timeLabelString, mForecast!!.mCurrent.getFormattedTime())
         mTimeView.text = timeLabelString
-        stringBuilder.append(mForecast.mCurrent.getHumidity())
+        stringBuilder.append(mForecast!!.mCurrent.getHumidity())
                 .append("%")
         mHumidityView.text = stringBuilder
         stringBuilder.setLength(0)
-        stringBuilder.append(mForecast.mCurrent.getPrecipChance())
+        stringBuilder.append(mForecast!!.mCurrent.getPrecipChance())
                 .append("%")
         mPrecipView.text = stringBuilder
-        mSummaryView.text = mForecast.mCurrent.mSummary
-        mIconView.setImageDrawable(ResourcesCompat.getDrawable(resources, mForecast.mCurrent.getIconId(), null))
+        mSummaryView.text = mForecast!!.mCurrent.mSummary
+        mIconView.setImageDrawable(ResourcesCompat.getDrawable(resources, mForecast!!.mCurrent.getIconId(), null))
     }
 
     @Throws(JSONException::class)
@@ -175,7 +176,7 @@ class MainActivity : AppCompatActivity() {
         return forecast
     }
 
-    inline fun <reified T : Activity> Activity.navigate(data: Array<Day>) {
+    inline fun <reified T : Activity> Activity.navigate(data: Array<Day>?) {
         val intent = Intent(this, T::class.java)
         intent.putExtra(DAILY_FORECAST, data)
         startActivity(intent)
@@ -183,7 +184,11 @@ class MainActivity : AppCompatActivity() {
 
     @OnClick(R.id.dailyButton)
     fun startDailyActivity() {
-        navigate<DailyForecastActivity>(mForecast.mDailyForecast)
+        if (mForecast != null) {
+            navigate<DailyForecastActivity>(mForecast?.mDailyForecast)
+        } else {
+            Toast.makeText(this, R.string.no_data_yet_message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun getDailyForecast(jsonData: String?): Array<Day> {
