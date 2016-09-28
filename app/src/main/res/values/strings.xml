@@ -12,7 +12,7 @@
 
     <string name="humidity_label_name">HUMIDITY</string>
     <string name="rainSnow_label_name">RAIN/SNOW?</string>
-    <string name="time_label_text">At %1$s it will be</string>
+    <string name="time_label_text">At %s it will be</string>
 
     <string name="default_summary">Getting current data…</string>
     <string name="default_address_latitude">59.941607</string>
