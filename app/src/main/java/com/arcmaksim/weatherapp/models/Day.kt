@@ -28,7 +28,7 @@ class Day() : Parcelable {
     lateinit var mTimezone: String
 
     fun getTemperature(): Int {
-        return Forecast.convertFahrenheitToCelcius(Math.round(mTemperatureMax).toInt())
+        return Forecast.convertFahrenheitToCelsius(Math.round(mTemperatureMax).toInt())
     }
 
     fun getIconId(): Int {
@@ -36,9 +36,9 @@ class Day() : Parcelable {
     }
 
     fun getDayOfTheWeek(): String {
-        val formatter: SimpleDateFormat = SimpleDateFormat("EEEE")
+        val formatter = SimpleDateFormat("EEEE")
         formatter.timeZone = TimeZone.getTimeZone(mTimezone)
-        val timeString: String = formatter.format(mTime * 1000)
+        val timeString = formatter.format(mTime * 1000)
         return timeString
     }
 
@@ -51,7 +51,7 @@ class Day() : Parcelable {
     }
 
     override fun describeContents(): Int {
-        return 0;
+        return 0
     }
 
     private constructor(parcel: Parcel?): this() {

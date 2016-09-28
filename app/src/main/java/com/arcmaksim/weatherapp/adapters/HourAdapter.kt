@@ -22,25 +22,18 @@ class HourAdapter(var mHours: Array<Hour>) : RecyclerView.Adapter<HourAdapter.Ho
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): HourViewHolder {
-        val view: View = LayoutInflater.from(parent?.context)
+        val view = LayoutInflater.from(parent?.context)
                 .inflate(R.layout.hourly_list_item, parent, false)
-        val viewHolder: HourViewHolder = HourViewHolder(view)
+        val viewHolder = HourViewHolder(view)
         return viewHolder
     }
 
     class HourViewHolder : RecyclerView.ViewHolder {
 
-        @BindView(R.id.timeLabel)
-        lateinit var timeView: TextView
-
-        @BindView(R.id.iconImageView)
-        lateinit var iconView: ImageView
-
-        @BindView(R.id.summaryLabel)
-        lateinit var summaryView: TextView
-
-        @BindView(R.id.temperatureLabel)
-        lateinit var temperatureView: TextView
+        @BindView(R.id.timeLabel) lateinit var timeView: TextView
+        @BindView(R.id.iconImageView) lateinit var iconView: ImageView
+        @BindView(R.id.summaryLabel) lateinit var summaryView: TextView
+        @BindView(R.id.temperatureLabel) lateinit var temperatureView: TextView
 
         init {
             ButterKnife.bind(this, itemView)

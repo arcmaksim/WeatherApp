@@ -19,7 +19,7 @@ class DayAdapter(var mContext: Context, var mDays: Array<Day>) : BaseAdapter() {
     }
 
     override fun getItemId(position: Int): Long {
-        return 0;
+        return 0
     }
 
     override fun getCount(): Int {
@@ -51,14 +51,10 @@ class DayAdapter(var mContext: Context, var mDays: Array<Day>) : BaseAdapter() {
     }
 
     class ViewHolder(view: View) {
-        @BindView(R.id.iconImageView)
-        lateinit var iconView: ImageView
 
-        @BindView(R.id.temperatureLabel)
-        lateinit var temperatureView: TextView
-
-        @BindView(R.id.dayNameLabel)
-        lateinit var dayNameView: TextView
+        @BindView(R.id.iconImageView) lateinit var iconView: ImageView
+        @BindView(R.id.temperatureLabel) lateinit var temperatureView: TextView
+        @BindView(R.id.dayNameLabel) lateinit var dayNameView: TextView
 
         init {
             ButterKnife.bind(this, view)
