@@ -176,16 +176,16 @@ class MainActivity : AppCompatActivity() {
         return forecast
     }
 
-    inline fun <reified T : Activity> Activity.navigate(data: Array<Day>?) {
+    inline fun <reified T : Activity> Activity.navigate(tag: String, data: Array<Any>?) {
         val intent = Intent(this, T::class.java)
-        intent.putExtra(DAILY_FORECAST, data)
+        intent.putExtra(tag, data)
         startActivity(intent)
     }
 
     @OnClick(R.id.dailyButton)
     fun startDailyActivity() {
         if (mForecast != null) {
-            navigate<DailyForecastActivity>(mForecast?.mDailyForecast)
+            navigate<DailyForecastActivity>(DAILY_FORECAST, mForecast?.mDailyForecast as Array<Any>?)
         } else {
             Toast.makeText(this, R.string.no_data_yet_message, Toast.LENGTH_SHORT).show()
         }
@@ -194,7 +194,7 @@ class MainActivity : AppCompatActivity() {
     @OnClick(R.id.hourlyButton)
     fun startHourlyActivity() {
         if (mForecast != null) {
-            navigate<HourlyForecastActivity>(mForecast?.mDailyForecast)
+            navigate<HourlyForecastActivity>(HOURLY_FORECAST, mForecast?.mHourlyForecast as Array<Any>?)
         } else {
             Toast.makeText(this, R.string.no_data_yet_message, Toast.LENGTH_SHORT).show()
         }
@@ -232,6 +232,7 @@ class MainActivity : AppCompatActivity() {
             hourlyForecast[i].mIconId = record.getString("icon")
             hourlyForecast[i].mTime = record.getString("time").toLong()
         }
+
         return hourlyForecast
     }
 

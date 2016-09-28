@@ -42,9 +42,11 @@ class HourAdapter(var mHours: Array<Hour>) : RecyclerView.Adapter<HourAdapter.Ho
         @BindView(R.id.temperatureLabel)
         lateinit var temperatureView: TextView
 
-        constructor(itemView: View) : super(itemView) {
-            ButterKnife.bind(itemView)
+        init {
+            ButterKnife.bind(this, itemView)
         }
+
+        constructor(itemView: View) : super(itemView) {}
 
         fun bindHour(hour: Hour) {
             timeView.text = hour.getFormattedTime()
