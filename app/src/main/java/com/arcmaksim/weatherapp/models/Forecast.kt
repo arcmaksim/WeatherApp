@@ -26,7 +26,7 @@ class Forecast {
             return iconID
         }
 
-        fun convertFahrenheitToCelcius(temperatureInFahrenheit: Int) : Int {
+        fun convertFahrenheitToCelsius(temperatureInFahrenheit: Int) : Int {
             return ((temperatureInFahrenheit - 32) * 5 / 9)
         }
     }

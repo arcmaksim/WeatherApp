@@ -23,10 +23,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@mipmap/clear_day"
+        android:contentDescription="@string/icon_image_view_content_desc"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/timeLabel"
-        android:layout_toEndOf="@+id/timeLabel"
+        android:layout_toRightOf="@id/timeLabel"
+        android:layout_toEndOf="@id/timeLabel"
         android:id="@+id/iconImageView"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:id="@+id/summaryLabel"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        tools:text="Partly cloudy"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/iconImageView"
+        android:layout_toEndOf="@id/iconImageView"/>
 
     <TextView
         android:textColor="@android:color/white"
@@ -38,17 +51,4 @@
         android:layout_alignParentEnd="true"
         android:id="@+id/temperatureLabel"
         tools:text="25"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:layout_alignLeft="@id/temperatureLabel"
-        android:id="@+id/summaryLabel"
-        android:layout_centerVertical="true"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        tools:text="Partly cloudy"
-        android:layout_toRightOf="@id/iconImageView"
-        android:layout_toEndOf="@id/iconImageView"/>
 </RelativeLayout>

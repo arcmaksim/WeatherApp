@@ -14,9 +14,9 @@ class Current() {
     lateinit var mTimezone: String
 
     fun getFormattedTime(): String {
-        val formatter: SimpleDateFormat = SimpleDateFormat("HH:mm")
+        val formatter = SimpleDateFormat("HH:mm")
         formatter.timeZone = TimeZone.getTimeZone(mTimezone)
-        val timeString: String = formatter.format(mTime * 1000)
+        val timeString = formatter.format(mTime * 1000)
         return timeString
     }
 
@@ -25,7 +25,7 @@ class Current() {
     }
 
     fun getTemperature(): Int {
-        return Forecast.convertFahrenheitToCelcius(Math.round(mTemperature).toInt())
+        return Forecast.convertFahrenheitToCelsius(Math.round(mTemperature).toInt())
     }
 
     fun getPrecipChance(): Int {

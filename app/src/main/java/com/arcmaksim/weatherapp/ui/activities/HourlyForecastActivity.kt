@@ -14,10 +14,14 @@ import java.util.*
 
 class HourlyForecastActivity : AppCompatActivity() {
 
+    companion object {
+        @JvmStatic
+        val TAG = HourlyForecastActivity::class.java.simpleName
+    }
+
     lateinit var mHours: Array<Hour>
 
-    @BindView(R.id.recyclerView)
-    lateinit var mRecyclerView: RecyclerView
+    @BindView(R.id.recyclerView) lateinit var mRecyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

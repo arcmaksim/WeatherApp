@@ -6,22 +6,25 @@ import android.os.Parcelable
 import android.view.View
 import android.widget.ListView
 import android.widget.Toast
-import com.arcmaksim.weatherapp.R
 import com.arcmaksim.weatherapp.adapters.DayAdapter
 import com.arcmaksim.weatherapp.models.Day
 import java.util.*
 
 class DailyForecastActivity : ListActivity() {
 
+    companion object {
+        @JvmStatic
+        val TAG = DailyForecastActivity::class.java.simpleName
+    }
+
     lateinit var mDays: Array<Day>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_daily_forecast)
 
         val parcelables: Array<Parcelable> = intent.getParcelableArrayExtra(MainActivity.DAILY_FORECAST)
         mDays = Arrays.copyOf(parcelables, parcelables.size, Array<Day>::class.java)
-        val adapter: DayAdapter = DayAdapter(this, mDays)
+        val adapter = DayAdapter(this, mDays)
         listAdapter = adapter
     }
 

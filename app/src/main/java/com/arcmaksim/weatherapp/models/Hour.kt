@@ -36,9 +36,9 @@ class Hour() : Parcelable {
     }
 
     fun getFormattedTime(): String {
-        val formatter: SimpleDateFormat = SimpleDateFormat("H")
+        val formatter = SimpleDateFormat("H")
         formatter.timeZone = TimeZone.getTimeZone(mTimezone)
-        val stringBuilder: StringBuilder = StringBuilder(formatter.format(mTime * 1000))
+        val stringBuilder = StringBuilder(formatter.format(mTime * 1000))
                 .append(":00")
         return stringBuilder.toString()
     }
@@ -56,7 +56,7 @@ class Hour() : Parcelable {
     }
 
     override fun describeContents(): Int {
-        return 0;
+        return 0
     }
 
     private constructor(parcel: Parcel?): this() {
