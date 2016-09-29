@@ -13,3 +13,13 @@ Used libraries:
 https://github.com/square/okhttp
 - ButterKnife 8.4.0
 https://github.com/JakeWharton/butterknife
+
+Changelog:
+ - v 1.0 - App from Android development course with additional changes
+
+Planned features:
+- Material design
+- GPS location
+- Widget
+- Settings
+- MVP pattern
