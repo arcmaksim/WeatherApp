@@ -15,8 +15,9 @@ https://github.com/square/okhttp
 - ButterKnife 8.4.0
 https://github.com/JakeWharton/butterknife
 
-## Changelog:
- - v 1.0 - App from Android development course with additional changes
+## Current features:
+- Current weather on main screen
+- Hourly and daily forecasts on additional screens
 
 ## Planned features:
 - Material design
