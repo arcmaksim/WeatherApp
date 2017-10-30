@@ -1,235 +1,215 @@
 package com.arcmaksim.weatherapp.ui.activities
 
-import android.app.Activity
+
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.View
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
-import com.arcmaksim.weatherapp.R
 import com.arcmaksim.weatherapp.models.Current
 import com.arcmaksim.weatherapp.models.Day
 import com.arcmaksim.weatherapp.models.Forecast
 import com.arcmaksim.weatherapp.models.Hour
 import com.arcmaksim.weatherapp.ui.fragments.AlertDialogFragment
+import com.arcmaksim.weatherapp.utils.navigate
+import com.pawegio.kandroid.hide
+import com.pawegio.kandroid.show
+import com.pawegio.kandroid.toast
+import com.pawegio.kandroid.visible
+import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 
+
 class MainActivity : AppCompatActivity() {
 
-    companion object {
-        @JvmStatic
-        val TAG = MainActivity::class.java.simpleName
-        @JvmStatic
-        val DAILY_FORECAST = "DAILY_FORECAST"
-        @JvmStatic
-        val HOURLY_FORECAST = "HOURLY_FORECAST"
-    }
+	companion object {
 
-    var mForecast: Forecast? = null
+		val TAG: String = MainActivity::class.java.simpleName
+		const val DAILY_FORECAST = "DAILY_FORECAST"
+		const val HOURLY_FORECAST = "HOURLY_FORECAST"
 
-    @BindView(R.id.temperatureLabel) lateinit var mTemperatureView: TextView
-    @BindView(R.id.humidityValue) lateinit var mHumidityView: TextView
-    @BindView(R.id.precipValue) lateinit var mPrecipView: TextView
-    @BindView(R.id.summaryLabel) lateinit var mSummaryView: TextView
-    @BindView(R.id.timeLabel) lateinit var mTimeView: TextView
-    @BindView(R.id.iconImageView) lateinit var mIconView: ImageView
-    @BindView(R.id.refreshImageView) lateinit var mRefreshView: ImageView
-    @BindView(R.id.progressBar) lateinit var mProgressBar: ProgressBar
+	}
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        ButterKnife.bind(this)
+	var forecast: Forecast? = null
 
-        getForecast()
-    }
 
-    @OnClick(R.id.refreshImageView)
-    fun updateForecast() {
-        getForecast()
-    }
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		setContentView(R.layout.activity_main)
 
-    fun getForecast() {
-        val apiKey= resources.getString(R.string.api_key)
-        val latitude = resources.getString(R.string.default_address_latitude)
-        val longitude = resources.getString(R.string.default_address_longitude)
-        var url = resources.getString(R.string.url)
-        url = String.format(url, apiKey, latitude, longitude)
+		dailyButton?.setOnClickListener {
+			forecast?.let {
+				navigate<DailyForecastActivity>(DAILY_FORECAST, it.mDailyForecast as Array<*>?)
+			} ?: toast(R.string.no_data_yet_message)
+		}
 
-        if (isNetworkAvailable()) {
-            toggleRefresh()
+		hourlyButton?.setOnClickListener {
+			forecast?.let {
+				navigate<HourlyForecastActivity>(HOURLY_FORECAST, it.mHourlyForecast as Array<*>?)
+			} ?: toast(R.string.no_data_yet_message)
+		}
 
-            val okHttpClient = OkHttpClient()
-            val request = Request.Builder()
-                    .url(url)
-                    .build()
+		refreshImageView?.setOnClickListener { getForecast() }
 
-            val call = okHttpClient.newCall(request)
-            call.enqueue(object : Callback {
-                override fun onFailure(call: Call?, e: IOException?) {
-                    runOnUiThread { toggleRefresh() }
-                }
+		getForecast()
+	}
 
-                override fun onResponse(call: Call?, response: Response?) {
-                    runOnUiThread { toggleRefresh() }
-                    try {
-                        val jsonData = response?.body()?.string()
-                        Log.v(TAG, jsonData)
-                        if (response?.isSuccessful!!) {
-                            mForecast = parseForecastDetails(jsonData)
-                            runOnUiThread { updateDisplay() }
-                        } else {
-                            alertUserAboutError()
-                        }
-                    } catch (e: IOException) {
-                        Log.e(TAG, "Exception caught:", e)
-                    } catch (e: JSONException) {
-                        Log.e(TAG, "Exception caught:", e)
-                    }
-                }
 
-            })
+	private fun getForecast() {
+		val apiKey = resources.getString(R.string.api_key)
+		val latitude = resources.getString(R.string.default_address_latitude)
+		val longitude = resources.getString(R.string.default_address_longitude)
+		var url = resources.getString(R.string.url)
+		url = String.format(url, apiKey, latitude, longitude)
 
-        } else {
-            Toast.makeText(this, R.string.network_unavailable_message, Toast.LENGTH_SHORT).show()
-        }
-    }
+		if (isNetworkAvailable()) {
+			toggleRefresh()
 
-    private fun toggleRefresh() {
-        if (mProgressBar.visibility == View.INVISIBLE) {
-            mProgressBar.visibility = View.VISIBLE
-            mRefreshView.visibility = View.INVISIBLE
-        } else {
-            mProgressBar.visibility = View.INVISIBLE
-            mRefreshView.visibility = View.VISIBLE
-        }
-    }
+			val okHttpClient = OkHttpClient()
+			val request = Request.Builder()
+					.url(url)
+					.build()
 
-    private fun updateDisplay() {
-        mTemperatureView.text = mForecast!!.mCurrent.getTemperature().toString()
-        val stringBuilder: StringBuilder = StringBuilder()
-        var timeLabelString: String = resources.getString(R.string.time_label_text)
-        timeLabelString = String.format(timeLabelString, mForecast!!.mCurrent.getFormattedTime())
-        mTimeView.text = timeLabelString
-        stringBuilder.append(mForecast!!.mCurrent.getHumidity())
-                .append("%")
-        mHumidityView.text = stringBuilder
-        stringBuilder.setLength(0)
-        stringBuilder.append(mForecast!!.mCurrent.getPrecipChance())
-                .append("%")
-        mPrecipView.text = stringBuilder
-        mSummaryView.text = mForecast!!.mCurrent.mSummary
-        mIconView.setImageDrawable(ResourcesCompat.getDrawable(resources, mForecast!!.mCurrent.getIconId(), null))
-    }
+			val call = okHttpClient.newCall(request)
+			call.enqueue(object : Callback {
 
-    @Throws(JSONException::class)
-    private fun getWeatherDetails(jsonData: String?): Current {
-        val forecast = JSONObject(jsonData)
-        val timezone = forecast.getString("timezone")
+				override fun onFailure(call: Call?, e: IOException?) =
+						runOnUiThread { toggleRefresh() }
 
-        val currently = forecast.getJSONObject("currently")
-        val current = Current()
-        current.mTime = currently.getLong("time")
-        current.mTemperature = currently.getDouble("temperature")
-        current.mIcon = currently.getString("icon")
-        current.mHumidity = currently.getDouble("humidity")
-        current.mPrecipChance = currently.getDouble("precipProbability")
-        current.mSummary = currently.getString("summary")
-        current.mTimezone = timezone
 
-        return current
-    }
+				override fun onResponse(call: Call?, response: Response?) {
+					runOnUiThread { toggleRefresh() }
+					try {
+						val jsonData = response?.body()?.string()
+						Log.v(TAG, jsonData)
+						if (response?.isSuccessful!!) {
+							forecast = parseForecastDetails(jsonData)
+							runOnUiThread { updateDisplay() }
+						} else {
+							alertUserAboutError()
+						}
+					} catch (e: IOException) {
+						Log.e(TAG, "Exception caught:", e)
+					} catch (e: JSONException) {
+						Log.e(TAG, "Exception caught:", e)
+					}
+				}
 
-    @Throws(JSONException::class)
-    private fun parseForecastDetails(jsonData: String?): Forecast {
-        val forecast = Forecast()
-        forecast.mCurrent = getWeatherDetails(jsonData)
-        forecast.mHourlyForecast = getHourlyDetails(jsonData)
-        forecast.mDailyForecast = getDailyForecast(jsonData)
-        return forecast
-    }
+			})
 
-    inline fun <reified T : Activity> Activity.navigate(tag: String, data: Array<*>?) {
-        val intent = Intent(this, T::class.java)
-        intent.putExtra(tag, data)
-        startActivity(intent)
-    }
+		} else {
+			toast(R.string.network_unavailable_message)
+		}
+	}
 
-    @OnClick(R.id.dailyButton)
-    fun startDailyActivity() {
-        if (mForecast != null) {
-            navigate<DailyForecastActivity>(DAILY_FORECAST, mForecast?.mDailyForecast as Array<*>?)
-        } else {
-            Toast.makeText(this, R.string.no_data_yet_message, Toast.LENGTH_SHORT).show()
-        }
-    }
 
-    @OnClick(R.id.hourlyButton)
-    fun startHourlyActivity() {
-        if (mForecast != null) {
-            navigate<HourlyForecastActivity>(HOURLY_FORECAST, mForecast?.mHourlyForecast as Array<*>?)
-        } else {
-            Toast.makeText(this, R.string.no_data_yet_message, Toast.LENGTH_SHORT).show()
-        }
-    }
+	private fun toggleRefresh() {
+		if (progressBar.visible) {
+			progressBar.hide(false)
+			refreshImageView.show()
+		} else {
+			refreshImageView.hide(false)
+			progressBar.show()
+		}
+	}
 
-    private fun getDailyForecast(jsonData: String?): Array<Day> {
-        val forecast = JSONObject(jsonData)
-        val timezone = forecast.getString("timezone")
-        val data = forecast.getJSONObject("daily").getJSONArray("data")
-        val dailyForecast = Array(data.length()) { Day() }
 
-        for (i in 0..data.length() - 1) {
-            val record = data.getJSONObject(i)
-            dailyForecast[i].mSummary = record.getString("summary")
-            dailyForecast[i].mTemperatureMax = record.getString("temperatureMax").toDouble()
-            dailyForecast[i].mIconId = record.getString("icon")
-            dailyForecast[i].mTimezone = timezone
-            dailyForecast[i].mTime = record.getString("time").toLong()
-        }
+	@SuppressLint("SetTextI18n")
+	private fun updateDisplay() {
+		temperatureLabel.text = forecast!!.mCurrent.getTemperature().toString()
 
-        return dailyForecast
-    }
+		var timeLabelString: String = resources.getString(R.string.time_label_text)
+		timeLabelString = String.format(timeLabelString, forecast!!.mCurrent.getFormattedTime())
+		timeLabel.text = timeLabelString
 
-    private fun getHourlyDetails(jsonData: String?): Array<Hour> {
-        val forecast = JSONObject(jsonData)
-        val timezone = forecast.getString("timezone")
-        val data = forecast.getJSONObject("hourly").getJSONArray("data")
-        val hourlyForecast = Array(data.length()) { Hour() }
+		humidityValue.text = "${forecast!!.mCurrent.getHumidity()}%"
+		precipValue?.text = "${forecast!!.mCurrent.getPrecipChance()}%"
+		summaryLabel?.text = forecast!!.mCurrent.mSummary
 
-        for (i in 0..data.length() - 1) {
-            val record = data.getJSONObject(i)
-            hourlyForecast[i].mSummary = record.getString("summary")
-            hourlyForecast[i].mTemperature = record.getString("temperature").toDouble()
-            hourlyForecast[i].mTimezone = timezone
-            hourlyForecast[i].mIconId = record.getString("icon")
-            hourlyForecast[i].mTime = record.getString("time").toLong()
-        }
+		iconImageView?.setImageDrawable(ResourcesCompat.getDrawable(resources,
+				forecast!!.mCurrent.getIconId(),
+				null))
+	}
 
-        return hourlyForecast
-    }
 
-    private fun isNetworkAvailable(): Boolean {
-        val manager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = manager.activeNetworkInfo
-        return networkInfo?.isConnected ?: false
-    }
+	@Throws(JSONException::class)
+	private fun getWeatherDetails(jsonData: String?): Current {
+		val forecast = JSONObject(jsonData)
+		val timezone = forecast.getString("timezone")
 
-    private fun alertUserAboutError() {
-        val alertDialogFragment = AlertDialogFragment()
-        alertDialogFragment.show(fragmentManager, "error_dialog")
-    }
+		val currently = forecast.getJSONObject("currently")
+		return Current().apply {
+			mTime = currently.getLong("time")
+			mTemperature = currently.getDouble("temperature")
+			mIcon = currently.getString("icon")
+			mHumidity = currently.getDouble("humidity")
+			mPrecipChance = currently.getDouble("precipProbability")
+			mSummary = currently.getString("summary")
+			mTimezone = timezone
+		}
+	}
+
+
+	@Throws(JSONException::class)
+	private fun parseForecastDetails(jsonData: String?) =
+			Forecast().apply {
+				mCurrent = getWeatherDetails(jsonData)
+				mHourlyForecast = getHourlyDetails(jsonData)
+				mDailyForecast = getDailyForecast(jsonData)
+			}
+
+
+	private fun getDailyForecast(jsonData: String?): Array<Day> {
+		val forecast = JSONObject(jsonData)
+		val timezone = forecast.getString("timezone")
+		val data = forecast.getJSONObject("daily").getJSONArray("data")
+
+		return Array(data.length()) { i ->
+			val record = data.getJSONObject(i)
+			Day().apply {
+				summary = record.getString("summary")
+				temperatureMax = record.getString("temperatureMax").toDouble()
+				iconId = record.getString("icon")
+				this.timezone = timezone
+				time = record.getString("time").toLong()
+			}
+		}
+	}
+
+
+	private fun getHourlyDetails(jsonData: String?): Array<Hour> {
+		val forecast = JSONObject(jsonData)
+		val timezone = forecast.getString("timezone")
+		val data = forecast.getJSONObject("hourly").getJSONArray("data")
+
+		return Array(data.length()) { i ->
+			val record = data.getJSONObject(i)
+			Hour().apply {
+				mSummary = record.getString("summary")
+				mTemperature = record.getString("temperature").toDouble()
+				mTimezone = timezone
+				mIconId = record.getString("icon")
+				mTime = record.getString("time").toLong()
+			}
+		}
+	}
+
+
+	private fun isNetworkAvailable(): Boolean {
+		val manager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+		val networkInfo = manager.activeNetworkInfo
+		return networkInfo?.isConnected ?: false
+	}
+
+
+	private fun alertUserAboutError() =
+			AlertDialogFragment().apply {
+				show(fragmentManager, "error_dialog")
+			}
+
 }

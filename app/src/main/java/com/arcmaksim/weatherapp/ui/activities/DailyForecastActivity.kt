@@ -34,7 +34,7 @@ class DailyForecastActivity : ListActivity() {
         val message = String.format("On %s the high will be %s and it will be %s",
                 mDays[position].getDayOfTheWeek(),
                 mDays[position].getTemperature(),
-                mDays[position].mSummary)
+                mDays[position].summary)
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="4dp"
-                android:paddingEnd="32dp"
-                android:paddingLeft="64dp"
-                android:paddingRight="32dp"
-                android:paddingStart="64dp"
-                android:paddingTop="4dp"
-                tools:background="@color/dailyListItemBackground">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="4dp"
+    android:paddingEnd="32dp"
+    android:paddingLeft="64dp"
+    android:paddingRight="32dp"
+    android:paddingStart="64dp"
+    android:paddingTop="4dp"
+    tools:background="@color/dailyListItemBackground">
 
     <ImageView
         android:id="@+id/circleImageView"
@@ -20,7 +20,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:contentDescription="@string/circle_image_view_content_desc"
-        android:src="@mipmap/bg_temperature"/>
+        android:src="@mipmap/ic_launcher" />
 
     <ImageView
         android:id="@+id/iconImageView"
@@ -31,7 +31,7 @@
         android:layout_toRightOf="@id/circleImageView"
         android:contentDescription="@string/icon_image_view_content_desc"
         android:paddingLeft="10dp"
-        app:srcCompat="@mipmap/clear_day"/>
+        app:srcCompat="@mipmap/clear_day" />
 
     <TextView
         android:id="@+id/dayNameLabel"
@@ -43,7 +43,7 @@
         android:paddingLeft="10dp"
         android:textColor="@android:color/white"
         android:textSize="20sp"
-        tools:text="Wednesday"/>
+        tools:text="Wednesday" />
 
     <TextView
         android:id="@+id/temperatureLabel"
@@ -57,5 +57,5 @@
         android:layout_alignTop="@id/circleImageView"
         android:gravity="center"
         android:textColor="@color/dailyListItemTemperatureText"
-        tools:text="25"/>
+        tools:text="25" />
 </RelativeLayout>

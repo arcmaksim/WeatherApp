@@ -1,63 +1,61 @@
 package com.arcmaksim.weatherapp.adapters
 
 import android.content.Context
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.ImageView
-import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
-import com.arcmaksim.weatherapp.R
 import com.arcmaksim.weatherapp.models.Day
+import kotlinx.android.extensions.CacheImplementation
+import kotlinx.android.extensions.ContainerOptions
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.daily_list_item.*
 
-class DayAdapter(var mContext: Context, var mDays: Array<Day>) : BaseAdapter() {
+class DayAdapter(val context: Context, var days: Array<Day>) : BaseAdapter() {
 
-    override fun getItem(position: Int): Any {
-        return mDays[position]
-    }
+	override fun getItem(position: Int) = days[position]
 
-    override fun getItemId(position: Int): Long {
-        return 0
-    }
 
-    override fun getCount(): Int {
-        return mDays.size
-    }
+	override fun getItemId(position: Int) = 0L
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        var view = convertView
-        val holder: ViewHolder
 
-        if (view == null) {
-            view = LayoutInflater.from(mContext).inflate(R.layout.daily_list_item, null)
-            holder = ViewHolder(view)
-            view!!.tag = holder
-        } else {
-            holder = view.tag as ViewHolder
-        }
+	override fun getCount() = days.size
 
-        val item = getItem(position)
-        holder.temperatureView.text = (item as Day).getTemperature().toString()
-        if (position == 0) {
-            holder.dayNameView.text = "Today"
-        } else {
-            holder.dayNameView.text = item.getDayOfTheWeek()
-        }
-        holder.iconView.setImageResource(item.getIconId())
 
-        return view
-    }
+	override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+		var view = convertView
+		val holder: ViewHolder
 
-    class ViewHolder(view: View) {
+		if (view == null) {
+			view = LayoutInflater.from(context).inflate(R.layout.daily_list_item, null)
+			holder = ViewHolder(view)
+			view!!.tag = holder
+		} else {
+			holder = view.tag as ViewHolder
+		}
 
-        @BindView(R.id.iconImageView) lateinit var iconView: ImageView
-        @BindView(R.id.temperatureLabel) lateinit var temperatureView: TextView
-        @BindView(R.id.dayNameLabel) lateinit var dayNameView: TextView
+		val item = getItem(position)
 
-        init {
-            ButterKnife.bind(this, view)
-        }
-    }
+
+		return view
+	}
+
+
+	@ContainerOptions(CacheImplementation.HASH_MAP)
+	class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
+			LayoutContainer {
+
+		fun bindView(day: Day) {
+			temperatureLabel?.text = day.getTemperature().toString()
+			dayNameLabel?.text =
+					if (adapterPosition == 0) {
+						"Today"
+					} else {
+						day.getDayOfTheWeek()
+					}
+			iconImageView?.setImageResource(day.getIconId())
+		}
+
+	}
 }
