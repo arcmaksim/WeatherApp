@@ -7,8 +7,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
+import androidx.recyclerview.widget.RecyclerView
 import com.arcmaksim.weatherapp.R
 import com.arcmaksim.weatherapp.models.Day
 
@@ -50,14 +49,12 @@ class DayAdapter(var mContext: Context, var mDays: Array<Day>) : BaseAdapter() {
         return view
     }
 
-    class ViewHolder(view: View) {
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        @BindView(R.id.iconImageView) lateinit var iconView: ImageView
-        @BindView(R.id.temperatureLabel) lateinit var temperatureView: TextView
-        @BindView(R.id.dayNameLabel) lateinit var dayNameView: TextView
+        val iconView: ImageView = itemView.findViewById(R.id.iconImageView)
+        val temperatureView: TextView = itemView.findViewById(R.id.dayNameLabel)
+        val dayNameView: TextView = itemView.findViewById(R.id.dayNameLabel)
 
-        init {
-            ButterKnife.bind(this, view)
-        }
     }
+
 }
