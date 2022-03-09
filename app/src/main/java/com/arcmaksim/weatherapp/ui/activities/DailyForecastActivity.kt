@@ -22,7 +22,7 @@ class DailyForecastActivity : ListActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val parcelables: Array<Parcelable> = intent.getParcelableArrayExtra(MainActivity.DAILY_FORECAST)
+        val parcelables: Array<Parcelable> = intent.getParcelableArrayExtra(MainActivity.DAILY_FORECAST) as Array<Parcelable>
         mDays = Arrays.copyOf(parcelables, parcelables.size, Array<Day>::class.java)
         val adapter = DayAdapter(this, mDays)
         listAdapter = adapter

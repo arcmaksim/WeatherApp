@@ -1,21 +1,15 @@
 package com.arcmaksim.weatherapp.ui.activities
 
 import android.app.Activity
+import androidx.activity.ComponentActivity
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Bundle
-import android.support.v4.content.res.ResourcesCompat
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
+import android.widget.*
+import androidx.core.content.res.ResourcesCompat
 import com.arcmaksim.weatherapp.R
 import com.arcmaksim.weatherapp.models.Current
 import com.arcmaksim.weatherapp.models.Day
@@ -27,7 +21,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity(R.layout.activity_main) {
 
     companion object {
         @JvmStatic
@@ -40,25 +34,43 @@ class MainActivity : AppCompatActivity() {
 
     var mForecast: Forecast? = null
 
-    @BindView(R.id.temperatureLabel) lateinit var mTemperatureView: TextView
-    @BindView(R.id.humidityValue) lateinit var mHumidityView: TextView
-    @BindView(R.id.precipValue) lateinit var mPrecipView: TextView
-    @BindView(R.id.summaryLabel) lateinit var mSummaryView: TextView
-    @BindView(R.id.timeLabel) lateinit var mTimeView: TextView
-    @BindView(R.id.iconImageView) lateinit var mIconView: ImageView
-    @BindView(R.id.refreshImageView) lateinit var mRefreshView: ImageView
-    @BindView(R.id.progressBar) lateinit var mProgressBar: ProgressBar
+    lateinit var mTemperatureView: TextView
+    lateinit var mHumidityView: TextView
+    lateinit var mPrecipView: TextView
+    lateinit var mSummaryView: TextView
+    lateinit var mTimeView: TextView
+    lateinit var mIconView: ImageView
+    lateinit var mRefreshView: ImageView
+    lateinit var mProgressBar: ProgressBar
+    lateinit var hourlyButton: Button
+    lateinit var dailyButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        ButterKnife.bind(this)
 
-        getForecast()
-    }
+        mTemperatureView = findViewById(R.id.temperatureLabel)
+        mHumidityView = findViewById(R.id.humidityValue)
+        mPrecipView = findViewById(R.id.precipValue)
+        mSummaryView = findViewById(R.id.summaryLabel)
+        mTimeView = findViewById(R.id.timeLabel)
+        mIconView = findViewById(R.id.iconImageView)
+        mRefreshView = findViewById<ImageView>(R.id.refreshImageView).apply {
+            setOnClickListener {
+                getForecast()
+            }
+        }
+        mProgressBar = findViewById(R.id.progressBar)
+        hourlyButton = findViewById<Button>(R.id.hourlyButton).apply {
+            setOnClickListener {
+                startHourlyActivity()
+            }
+        }
+        dailyButton = findViewById<Button>(R.id.dailyButton).apply {
+            setOnClickListener {
+                startDailyActivity()
+            }
+        }
 
-    @OnClick(R.id.refreshImageView)
-    fun updateForecast() {
         getForecast()
     }
 
@@ -87,7 +99,7 @@ class MainActivity : AppCompatActivity() {
                     runOnUiThread { toggleRefresh() }
                     try {
                         val jsonData = response?.body()?.string()
-                        Log.v(TAG, jsonData)
+                        Log.v(TAG, jsonData!!)
                         if (response?.isSuccessful!!) {
                             mForecast = parseForecastDetails(jsonData)
                             runOnUiThread { updateDisplay() }
@@ -168,7 +180,6 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    @OnClick(R.id.dailyButton)
     fun startDailyActivity() {
         if (mForecast != null) {
             navigate<DailyForecastActivity>(DAILY_FORECAST, mForecast?.mDailyForecast as Array<*>?)
@@ -177,7 +188,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @OnClick(R.id.hourlyButton)
     fun startHourlyActivity() {
         if (mForecast != null) {
             navigate<HourlyForecastActivity>(HOURLY_FORECAST, mForecast?.mHourlyForecast as Array<*>?)

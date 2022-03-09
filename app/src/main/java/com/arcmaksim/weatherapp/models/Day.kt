@@ -57,10 +57,10 @@ class Day() : Parcelable {
     private constructor(parcel: Parcel?): this() {
         if (parcel != null) {
             mTime = parcel.readLong()
-            mSummary = parcel.readString()
+            mSummary = parcel.readString()!!
             mTemperatureMax = parcel.readDouble()
-            mIconId = parcel.readString()
-            mTimezone = parcel.readString()
+            mIconId = parcel.readString()!!
+            mTimezone = parcel.readString()!!
         }
     }
 

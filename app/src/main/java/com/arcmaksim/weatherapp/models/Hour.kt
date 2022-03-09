@@ -62,10 +62,10 @@ class Hour() : Parcelable {
     private constructor(parcel: Parcel?): this() {
         if (parcel != null) {
             mTime = parcel.readLong()
-            mSummary = parcel.readString()
+            mSummary = parcel.readString()!!
             mTemperature = parcel.readDouble()
-            mIconId = parcel.readString()
-            mTimezone = parcel.readString()
+            mIconId = parcel.readString()!!
+            mTimezone = parcel.readString()!!
         }
     }
 }
