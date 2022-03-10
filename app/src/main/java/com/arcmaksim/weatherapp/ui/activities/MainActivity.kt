@@ -15,6 +15,7 @@ import com.arcmaksim.weatherapp.models.Current
 import com.arcmaksim.weatherapp.models.Day
 import com.arcmaksim.weatherapp.models.Forecast
 import com.arcmaksim.weatherapp.models.Hour
+import com.arcmaksim.weatherapp.ui.DailyForecastArgs
 import com.arcmaksim.weatherapp.ui.HourlyForecastArgs
 import com.arcmaksim.weatherapp.ui.fragments.AlertDialogFragment
 import okhttp3.*
@@ -189,26 +190,38 @@ class MainActivity : ComponentActivity(R.layout.activity_main) {
         startActivity(intent)
     }
 
-    fun startDailyActivity() {
-        if (mForecast != null) {
-            navigate<DailyForecastActivity>(DAILY_FORECAST, mForecast?.mDailyForecast as Array<*>?)
-        } else {
-            Toast.makeText(this, R.string.no_data_yet_message, Toast.LENGTH_SHORT).show()
+    private fun startDailyActivity() {
+        val dailyForecast = mForecast?.mDailyForecast ?: let {
+            Toast.makeText(
+                this,
+                R.string.no_data_yet_message,
+                Toast.LENGTH_SHORT
+            ).show()
+            return
         }
+
+        startActivity(
+            Intent(this, DailyForecastActivity::class.java).apply {
+                putExtra(DAILY_FORECAST, DailyForecastArgs(dailyForecast.toList()))
+            }
+        )
     }
 
-    fun startHourlyActivity() {
-        mForecast?.let {
-            startActivity(
-                Intent(this, HourlyForecastActivity::class.java).apply {
-                    putExtra(HOURLY_FORECAST, HourlyForecastArgs(it.mHourlyForecast.toList()))
-                }
-            )
-        } ?: Toast.makeText(
-            this,
-            R.string.no_data_yet_message,
-            Toast.LENGTH_SHORT
-        ).show()
+    private fun startHourlyActivity() {
+        val hourlyForecast = mForecast?.mHourlyForecast ?: let {
+            Toast.makeText(
+                this,
+                R.string.no_data_yet_message,
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        startActivity(
+            Intent(this, HourlyForecastActivity::class.java).apply {
+                putExtra(HOURLY_FORECAST, HourlyForecastArgs(hourlyForecast.toList()))
+            }
+        )
     }
 
     private fun getDailyForecast(jsonData: String?): Array<Day> {
