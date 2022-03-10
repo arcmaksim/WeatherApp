@@ -38,13 +38,13 @@ class DayAdapter(var mContext: Context, var mDays: Array<Day>) : BaseAdapter() {
         }
 
         val item = getItem(position)
-        holder.temperatureView.text = (item as Day).getTemperature().toString()
+        holder.temperatureView.text = (item as Day).temperature.toString()
         if (position == 0) {
             holder.dayNameView.text = "Today"
         } else {
-            holder.dayNameView.text = item.getDayOfTheWeek()
+            holder.dayNameView.text = item.dayOfTheWeek
         }
-        holder.iconView.setImageResource(item.getIconId())
+        holder.iconView.setImageResource(item.iconId)
 
         return view
     }
