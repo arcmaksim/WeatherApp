@@ -15,6 +15,7 @@ import com.arcmaksim.weatherapp.models.Current
 import com.arcmaksim.weatherapp.models.Day
 import com.arcmaksim.weatherapp.models.Forecast
 import com.arcmaksim.weatherapp.models.Hour
+import com.arcmaksim.weatherapp.ui.HourlyForecastArgs
 import com.arcmaksim.weatherapp.ui.fragments.AlertDialogFragment
 import okhttp3.*
 import org.json.JSONException
@@ -26,8 +27,10 @@ class MainActivity : ComponentActivity(R.layout.activity_main) {
     companion object {
         @JvmStatic
         val TAG = MainActivity::class.java.simpleName
+
         @JvmStatic
         val DAILY_FORECAST = "DAILY_FORECAST"
+
         @JvmStatic
         val HOURLY_FORECAST = "HOURLY_FORECAST"
     }
@@ -75,7 +78,7 @@ class MainActivity : ComponentActivity(R.layout.activity_main) {
     }
 
     fun getForecast() {
-        val apiKey= resources.getString(R.string.api_key)
+        val apiKey = resources.getString(R.string.api_key)
         val latitude = resources.getString(R.string.default_address_latitude)
         val longitude = resources.getString(R.string.default_address_longitude)
         var url = resources.getString(R.string.url)
@@ -86,8 +89,8 @@ class MainActivity : ComponentActivity(R.layout.activity_main) {
 
             val okHttpClient = OkHttpClient()
             val request = Request.Builder()
-                    .url(url)
-                    .build()
+                .url(url)
+                .build()
 
             val call = okHttpClient.newCall(request)
             call.enqueue(object : Callback {
@@ -137,14 +140,20 @@ class MainActivity : ComponentActivity(R.layout.activity_main) {
         timeLabelString = String.format(timeLabelString, mForecast!!.mCurrent.getFormattedTime())
         mTimeView.text = timeLabelString
         stringBuilder.append(mForecast!!.mCurrent.getHumidity())
-                .append("%")
+            .append("%")
         mHumidityView.text = stringBuilder
         stringBuilder.setLength(0)
         stringBuilder.append(mForecast!!.mCurrent.getPrecipChance())
-                .append("%")
+            .append("%")
         mPrecipView.text = stringBuilder
         mSummaryView.text = mForecast!!.mCurrent.mSummary
-        mIconView.setImageDrawable(ResourcesCompat.getDrawable(resources, mForecast!!.mCurrent.getIconId(), null))
+        mIconView.setImageDrawable(
+            ResourcesCompat.getDrawable(
+                resources,
+                mForecast!!.mCurrent.getIconId(),
+                null
+            )
+        )
     }
 
     @Throws(JSONException::class)
@@ -189,47 +198,54 @@ class MainActivity : ComponentActivity(R.layout.activity_main) {
     }
 
     fun startHourlyActivity() {
-        if (mForecast != null) {
-            navigate<HourlyForecastActivity>(HOURLY_FORECAST, mForecast?.mHourlyForecast as Array<*>?)
-        } else {
-            Toast.makeText(this, R.string.no_data_yet_message, Toast.LENGTH_SHORT).show()
-        }
+        mForecast?.let {
+            startActivity(
+                Intent(this, HourlyForecastActivity::class.java).apply {
+                    putExtra(HOURLY_FORECAST, HourlyForecastArgs(it.mHourlyForecast.toList()))
+                }
+            )
+        } ?: Toast.makeText(
+            this,
+            R.string.no_data_yet_message,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     private fun getDailyForecast(jsonData: String?): Array<Day> {
         val forecast = JSONObject(jsonData)
         val timezone = forecast.getString("timezone")
         val data = forecast.getJSONObject("daily").getJSONArray("data")
-        val dailyForecast = Array(data.length()) { Day() }
-
-        for (i in 0..data.length() - 1) {
-            val record = data.getJSONObject(i)
-            dailyForecast[i].mSummary = record.getString("summary")
-            dailyForecast[i].mTemperatureMax = record.getString("temperatureMax").toDouble()
-            dailyForecast[i].mIconId = record.getString("icon")
-            dailyForecast[i].mTimezone = timezone
-            dailyForecast[i].mTime = record.getString("time").toLong()
+        return Array(data.length()) { index ->
+            val record = data.getJSONObject(index)
+            Day(
+                iconId = Forecast.resolveIconId(record.getString("icon")),
+                summary = record.getString("summary"),
+                temperature = Forecast.convertFahrenheitToCelsius(
+                    record.getString("temperatureMax").toDouble().toInt()
+                ),
+                timezone = timezone,
+                time = record.getString("time").toLong(),
+            )
         }
-
-        return dailyForecast
     }
 
     private fun getHourlyDetails(jsonData: String?): Array<Hour> {
         val forecast = JSONObject(jsonData)
         val timezone = forecast.getString("timezone")
         val data = forecast.getJSONObject("hourly").getJSONArray("data")
-        val hourlyForecast = Array(data.length()) { Hour() }
 
-        for (i in 0..data.length() - 1) {
-            val record = data.getJSONObject(i)
-            hourlyForecast[i].mSummary = record.getString("summary")
-            hourlyForecast[i].mTemperature = record.getString("temperature").toDouble()
-            hourlyForecast[i].mTimezone = timezone
-            hourlyForecast[i].mIconId = record.getString("icon")
-            hourlyForecast[i].mTime = record.getString("time").toLong()
+        return Array(data.length()) { index ->
+            val record = data.getJSONObject(index)
+            Hour(
+                iconId = Forecast.resolveIconId(record.getString("icon")),
+                summary = record.getString("summary"),
+                temperature = Forecast.convertFahrenheitToCelsius(
+                    record.getString("temperature").toDouble().toInt()
+                ),
+                time = record.getString("time").toLong(),
+                timezone = timezone,
+            )
         }
-
-        return hourlyForecast
     }
 
     private fun isNetworkAvailable(): Boolean {

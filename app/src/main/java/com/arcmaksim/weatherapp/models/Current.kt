@@ -21,7 +21,7 @@ class Current() {
     }
 
     fun getIconId(): Int {
-        return Forecast.getIconId(mIcon)
+        return Forecast.resolveIconId(mIcon)
     }
 
     fun getTemperature(): Int {
