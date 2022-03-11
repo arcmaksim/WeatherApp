@@ -1,25 +1,31 @@
 # WeatherApp
 
-Simple Weather App from [TeamTreeHouse](https://teamtreehouse.com) Android development course. Written with Kotlin instead of Java.
+Simple Weather App.
+Originally was written as part of the Android development course from from [TeamTreeHouse](https://teamtreehouse.com).
+Refactored used modern libraries and practices.
 
 ## Supported versions of Android
-- Minimum: Android 4.1.x (API 16)
-- Target: Android 7.0 (API 24)
+- Minimum: Android 8 (API 26)
+- Target: Android 12L (API 32)
 
 ## Weather data
 By [DarkSky](https://darksky.net)
 
-## Used libraries
-- [OkHttp](https://github.com/square/okhttp) v3.4.1
-- [ButterKnife](https://github.com/JakeWharton/butterknife) v8.4.0
+## Used stack
+- Kotlin
+- Jetpack libraries
+- Dagger2
+- Moshi
+- Retrofit
+- Jetpack Compose
 
 ## Current features
 - Current weather on main screen
 - Hourly and daily forecasts on additional screens
 
 ## Planned features
-- Material design
+- Redesign with Material Design 3 using Compose
+- CI/CD using GitHub actions
 - GPS location
 - Widget
-- Settings
-- MVP pattern
+- Settings (units, location, etc.)
