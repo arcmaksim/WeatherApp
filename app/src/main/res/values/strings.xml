@@ -7,16 +7,11 @@
     <string name="network_unavailable_message">Network is unavailable!</string>
     <string name="no_data_yet_message">There is no data yet!</string>
 
-    <string name="api_key">0477e00681642c3961f2e5621998ce85</string>
-    <string name="url">https://api.darksky.net/forecast/%1$s/%2$s,%3$s</string>
-
     <string name="humidity_label_name">HUMIDITY</string>
     <string name="rainSnow_label_name">RAIN/SNOW?</string>
     <string name="time_label_text">At %s it will be</string>
 
     <string name="default_summary">Getting current data…</string>
-    <string name="default_address_latitude">59.941607</string>
-    <string name="default_address_longitude">30.467906</string>
     <string name="default_number_label">--</string>
     <string name="default_time_label">…</string>
     <string name="default_location_label">Saint-Petersburg</string>

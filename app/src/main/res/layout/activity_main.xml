@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.arcmaksim.weatherapp.ui.activities.MainActivity"
+    tools:context="com.arcmaksim.weatherapp.ui.MainActivity"
     android:background="@drawable/bg_gradient">
 
     <TextView
@@ -148,14 +148,14 @@
         android:contentDescription="@string/refresh_image_view_content_desc"/>
 
     <ProgressBar
+        android:id="@+id/progressBar"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/refreshImageView"
-        android:visibility="invisible"
-        android:id="@+id/progressBar"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible" />
 
     <LinearLayout
         android:orientation="horizontal"

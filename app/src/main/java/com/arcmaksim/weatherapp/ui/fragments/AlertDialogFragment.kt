@@ -6,7 +6,7 @@ import android.app.DialogFragment
 import android.os.Bundle
 import com.arcmaksim.weatherapp.R
 
-class AlertDialogFragment : DialogFragment() {
+class AlertDialogFragment() : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val context = activity
