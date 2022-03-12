@@ -22,8 +22,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".presentation.dailyforecast.DailyForecastFragment" />
-        <activity android:name=".presentation.hourlyforecast.HourlyForecastFragment" />
     </application>
 
 </manifest>
