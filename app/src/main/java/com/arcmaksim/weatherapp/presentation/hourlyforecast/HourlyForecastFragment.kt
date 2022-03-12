@@ -1,19 +1,21 @@
-package com.arcmaksim.weatherapp.ui.dailyforecast
+package com.arcmaksim.weatherapp.presentation.hourlyforecast
 
 import android.os.Bundle
-import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -22,42 +24,44 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import com.arcmaksim.weatherapp.R
 import com.arcmaksim.weatherapp.domain.model.ForecastRecord
 import com.arcmaksim.weatherapp.domain.model.WeatherType
-import com.arcmaksim.weatherapp.ui.MainActivity
-import com.arcmaksim.weatherapp.ui.toIconResId
+import com.arcmaksim.weatherapp.presentation.toIconResId
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-class DailyForecastActivity : ComponentActivity() {
+class HourlyForecastFragment : Fragment() {
 
-    override fun onCreate(
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ) {
-        super.onCreate(savedInstanceState)
+    ): View = ComposeView(requireContext()).apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
 
-        val args = intent.getParcelableExtra<DailyForecastArgs>(MainActivity.DAILY_FORECAST)!!
+        val args: HourlyForecastFragmentArgs by navArgs()
 
         setContent {
             MaterialTheme {
-                DailyForecast(
+                HourlyForecast(
                     args.timezone,
-                    args.forecast,
+                    args.records.toList(),
                 )
             }
         }
     }
 
     @Composable
-    fun DailyForecast(
+    fun HourlyForecast(
         timezone: String,
         forecast: List<ForecastRecord>,
     ) {
@@ -73,63 +77,61 @@ class DailyForecastActivity : ComponentActivity() {
                     ),
                 ),
             contentPadding = PaddingValues(
-                start = 64.dp,
-                top = 4.dp,
+                start = 32.dp,
+                top = 16.dp,
                 end = 32.dp,
-                bottom = 4.dp,
+                bottom = 16.dp,
             ),
         ) {
             items(forecast) { item ->
-                DailyForecastLine(timezone, item)
+                HourlyForecastLine(
+                    timezone = timezone,
+                    hour = item,
+                )
             }
         }
     }
 
     @Composable
-    fun DailyForecastLine(
+    fun HourlyForecastLine(
         timezone: String,
-        day: ForecastRecord,
+        hour: ForecastRecord,
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp)
-                .background(Color.Transparent)
-                .clickable {
-                    val message = String.format(
-                        "On %s the high will be %s and it will be %s",
-                        day.getDayOfTheWeek(timezone),
-                        day.temperature,
-                        day.summary
-                    )
-                    Toast
-                        .makeText(this, message, Toast.LENGTH_LONG)
-                        .show()
-                },
+                .background(Color.Transparent),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = day.temperature.toString(),
+                modifier = Modifier.width(80.dp),
+                text = hour.getFormattedTime(timezone),
                 color = Color.White,
                 style = TextStyle(
                     fontSize = 24.sp,
                 ),
             )
             Icon(
-                modifier = Modifier.padding(start = 10.dp),
-                painter = painterResource(day.type.toIconResId()),
+                painter = painterResource(hour.type.toIconResId()),
                 tint = Color.White,
                 contentDescription = stringResource(R.string.icon_image_view_content_desc),
             )
             Text(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 10.dp),
-                text = day.getDayOfTheWeek(timezone),
-                textAlign = TextAlign.End,
+                    .padding(horizontal = 15.dp),
+                text = hour.summary,
                 color = Color.White,
                 style = TextStyle(
-                    fontSize = 20.sp,
+                    fontSize = 14.sp,
+                ),
+            )
+            Text(
+                text = "${hour.temperature}",
+                color = Color.White,
+                style = TextStyle(
+                    fontSize = 24.sp,
                 ),
             )
         }
@@ -140,9 +142,9 @@ class DailyForecastActivity : ComponentActivity() {
         backgroundColor = 0xFFF25019,
     )
     @Composable
-    fun DailyForecastLinePreview() {
+    fun HourlyForecastLinePreview() {
         MaterialTheme {
-            DailyForecastLine(
+            HourlyForecastLine(
                 "Europe/Moscow",
                 ForecastRecord(
                     type = WeatherType.ClearDay,
@@ -165,9 +167,9 @@ class DailyForecastActivity : ComponentActivity() {
         showBackground = true,
     )
     @Composable
-    fun DailyForecastScreenPreview() {
+    fun HourlyForecastScreenPreview() {
         val timezone = "Europe/Moscow"
-        val dailyForecast = (1..10).map { index ->
+        val hourlyForecast = (1..10).map { index ->
             ForecastRecord(
                 type = WeatherType.ClearDay,
                 time = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
@@ -182,7 +184,7 @@ class DailyForecastActivity : ComponentActivity() {
         }
 
         MaterialTheme {
-            DailyForecast(timezone, dailyForecast)
+            HourlyForecast(timezone, hourlyForecast)
         }
     }
 

@@ -1,9 +1,10 @@
-package com.arcmaksim.weatherapp.ui
+package com.arcmaksim.weatherapp.presentation.currentforecast
 
-import androidx.activity.ComponentActivity
-import android.content.Intent
+import android.app.AlertDialog
 import android.os.Bundle
-import androidx.activity.compose.setContent
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,9 +18,12 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -28,90 +32,95 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.arcmaksim.weatherapp.App
 import com.arcmaksim.weatherapp.R
 import com.arcmaksim.weatherapp.domain.model.Forecast
 import com.arcmaksim.weatherapp.domain.model.ForecastRecord
 import com.arcmaksim.weatherapp.domain.model.ForecastRecordGroup
 import com.arcmaksim.weatherapp.domain.model.WeatherType
-import com.arcmaksim.weatherapp.ui.currentforecast.CurrentForecastScreenState
-import com.arcmaksim.weatherapp.ui.currentforecast.ICurrentForecastViewModel
-import com.arcmaksim.weatherapp.ui.dailyforecast.DailyForecastArgs
-import com.arcmaksim.weatherapp.ui.hourlyforecast.HourlyForecastArgs
-import com.arcmaksim.weatherapp.ui.dailyforecast.DailyForecastActivity
-import com.arcmaksim.weatherapp.ui.hourlyforecast.HourlyForecastActivity
-import com.arcmaksim.weatherapp.ui.fragments.AlertDialogFragment
+import com.arcmaksim.weatherapp.presentation.dailyforecast.DailyForecastFragmentArgs
+import com.arcmaksim.weatherapp.presentation.hourlyforecast.HourlyForecastFragmentArgs
+import com.arcmaksim.weatherapp.presentation.toIconResId
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import javax.inject.Inject
 
-class MainActivity : ComponentActivity() {
-
-    companion object {
-        const val DAILY_FORECAST = "DAILY_FORECAST"
-        const val HOURLY_FORECAST = "HOURLY_FORECAST"
-    }
+class CurrentForecastFragment : Fragment() {
 
     @Inject
     lateinit var viewModel: ICurrentForecastViewModel
 
-    override fun onCreate(
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ) {
-        (application as App).forecastComponent.inject(this)
-
-        super.onCreate(savedInstanceState)
-
+    ): View = ComposeView(requireContext()).apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
         setContent {
             MaterialTheme {
                 CurrentForecastScreen(viewModel)
             }
         }
-
-        viewModel.getForecast(false)
     }
 
-    private fun startDailyActivity(
+    override fun onCreate(
+        savedInstanceState: Bundle?,
+    ) {
+        (requireActivity().application as App).forecastComponent.inject(this)
+        super.onCreate(savedInstanceState)
+    }
+
+    private fun navigateToDailyForecast(
         timezone: String,
         dailyForecast: List<ForecastRecord>,
     ) {
-        startActivity(
-            Intent(this, DailyForecastActivity::class.java).apply {
-                putExtra(DAILY_FORECAST, DailyForecastArgs(timezone, dailyForecast))
-            }
+        findNavController().navigate(
+            R.id.action_currentForecastFragment_to_dailyForecastFragment,
+            DailyForecastFragmentArgs(
+                timezone,
+                dailyForecast.toTypedArray(),
+            ).toBundle()
         )
     }
 
-    private fun startHourlyActivity(
+    private fun navigateToHourlyForecast(
         timezone: String,
         hourlyForecast: List<ForecastRecord>,
     ) {
-        startActivity(
-            Intent(this, HourlyForecastActivity::class.java).apply {
-                putExtra(HOURLY_FORECAST, HourlyForecastArgs(timezone, hourlyForecast))
-            }
+        findNavController().navigate(
+            R.id.action_currentForecastFragment_to_hourlyForecastFragment,
+            HourlyForecastFragmentArgs(
+                timezone,
+                hourlyForecast.toTypedArray(),
+            ).toBundle()
         )
     }
 
     private fun alertUserAboutError() {
-        val alertDialogFragment = AlertDialogFragment()
-        alertDialogFragment.show(fragmentManager, "error_dialog")
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.error_title)
+            .setMessage(R.string.error_message)
+            .setPositiveButton(R.string.error_ok_button_text, null)
+            .create()
+            .show()
     }
 
     @Composable
     fun CurrentForecastScreen(
         viewModel: ICurrentForecastViewModel
     ) {
-        val state = viewModel.state.collectAsState(CurrentForecastScreenState())
+        val state by viewModel.state.collectAsState(CurrentForecastFragmentState())
 
         CurrentForecast(
-            forecast = state.value.forecast,
-            isLoading = state.value.isLoading,
+            forecast = state.forecast,
+            isLoading = state.isLoading,
             onRefresh = { viewModel.getForecast(true) },
         )
 
-        state.value.error?.let {
+        state.error?.let {
             alertUserAboutError()
         }
     }
@@ -277,7 +286,8 @@ class MainActivity : ComponentActivity() {
                     start.linkTo(precipLabelRef.start)
                     end.linkTo(precipLabelRef.end)
                 },
-                text = forecast?.current?.precipitationProbability?.toString() ?: getString(R.string.default_number_label),
+                text = forecast?.current?.precipitationProbability?.toString()
+                    ?: getString(R.string.default_number_label),
                 color = Color.White,
                 textAlign = TextAlign.Center,
                 style = TextStyle(
@@ -318,7 +328,7 @@ class MainActivity : ComponentActivity() {
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                 onClick = {
                     forecast?.let {
-                        startHourlyActivity(it.timezone, it.hourlyForecast.records)
+                        navigateToHourlyForecast(it.timezone, it.hourlyForecast.records)
                     }
                 },
             ) {
@@ -344,7 +354,7 @@ class MainActivity : ComponentActivity() {
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                 onClick = {
                     forecast?.let {
-                        startHourlyActivity(it.timezone, it.hourlyForecast.records)
+                        navigateToDailyForecast(it.timezone, it.hourlyForecast.records)
                     }
                 },
             ) {
@@ -364,9 +374,9 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun CurrentForecastPreview() {
         val viewModel = object : ICurrentForecastViewModel {
-            override val state: MutableStateFlow<CurrentForecastScreenState>
+            override val state: MutableStateFlow<CurrentForecastFragmentState>
                 get() = MutableStateFlow(
-                    CurrentForecastScreenState(
+                    CurrentForecastFragmentState(
                         forecast = Forecast(
                             "Europe/Moscow",
                             current = ForecastRecord(
