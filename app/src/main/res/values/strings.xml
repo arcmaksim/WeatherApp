@@ -14,7 +14,7 @@
     <string name="default_summary">Getting current data…</string>
     <string name="default_number_label">--</string>
     <string name="default_time_label">…</string>
-    <string name="default_location_label">Saint-Petersburg</string>
+    <string name="default_location_label">Saint Petersburg</string>
 
     <string name="icon_image_view_content_desc">Icon for current weather</string>
     <string name="refresh_image_view_content_desc">Refresh button</string>
