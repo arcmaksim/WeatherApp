@@ -1,4 +1,4 @@
-package com.arcmaksim.weatherapp.ui.currentforecast
+package com.arcmaksim.weatherapp.presentation.currentforecast
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,7 +12,11 @@ class CurrentForecastViewModel @Inject constructor(
     private val interactor: IForecastInteractor,
 ) : ViewModel(), ICurrentForecastViewModel {
 
-    override val state = MutableStateFlow(CurrentForecastScreenState())
+    override val state = MutableStateFlow(CurrentForecastFragmentState())
+
+    init {
+        getForecast(false)
+    }
 
     override fun getForecast(
         isRefreshing: Boolean,

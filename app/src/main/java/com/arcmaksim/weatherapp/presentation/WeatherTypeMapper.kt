@@ -1,4 +1,4 @@
-package com.arcmaksim.weatherapp.ui
+package com.arcmaksim.weatherapp.presentation
 
 import com.arcmaksim.weatherapp.R
 import com.arcmaksim.weatherapp.domain.model.WeatherType

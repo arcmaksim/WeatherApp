@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/currentForecastFragment">
+
+    <fragment
+        android:id="@+id/currentForecastFragment"
+        android:name="com.arcmaksim.weatherapp.presentation.currentforecast.CurrentForecastFragment">
+        <action
+            android:id="@+id/action_currentForecastFragment_to_dailyForecastFragment"
+            app:destination="@id/dailyForecastFragment" />
+        <action
+            android:id="@+id/action_currentForecastFragment_to_hourlyForecastFragment"
+            app:destination="@id/hourlyForecastFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dailyForecastFragment"
+        android:name="com.arcmaksim.weatherapp.presentation.dailyforecast.DailyForecastFragment">
+        <argument
+            android:name="timezone"
+            app:nullable="false"
+            app:argType="string" />
+        <argument
+            android:name="records"
+            app:nullable="false"
+            app:argType="com.arcmaksim.weatherapp.domain.model.ForecastRecord[]" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/hourlyForecastFragment"
+        android:name="com.arcmaksim.weatherapp.presentation.hourlyforecast.HourlyForecastFragment">
+        <argument
+            android:name="timezone"
+            app:nullable="false"
+            app:argType="string" />
+        <argument
+            android:name="records"
+            app:nullable="false"
+            app:argType="com.arcmaksim.weatherapp.domain.model.ForecastRecord[]" />
+    </fragment>
+
+</navigation>
