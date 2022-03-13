@@ -2,7 +2,7 @@ package com.arcmaksim.weatherapp.presentation.currentforecast
 
 import com.arcmaksim.weatherapp.domain.model.Forecast
 
-data class CurrentForecastFragmentState(
+data class CurrentForecastState(
     val forecast: Forecast? = null,
     val isLoading: Boolean = false,
     val error: String? = null,

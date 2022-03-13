@@ -12,7 +12,7 @@ class CurrentForecastViewModel @Inject constructor(
     private val interactor: IForecastInteractor,
 ) : ViewModel(), ICurrentForecastViewModel {
 
-    override val state = MutableStateFlow(CurrentForecastFragmentState())
+    override val state = MutableStateFlow(CurrentForecastState())
 
     init {
         getForecast(false)
