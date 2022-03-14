@@ -5,22 +5,31 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.arcmaksim.weatherapp.di.component.DaggerForecastComponent
-import com.arcmaksim.weatherapp.presentation.currentforecast.CurrentForecastDestination
+import com.arcmaksim.weatherapp.di.component.DaggerNavigationComponent
 import com.arcmaksim.weatherapp.presentation.currentforecast.CurrentForecastScreen
 import com.arcmaksim.weatherapp.presentation.currentforecast.ICurrentForecastViewModel
-import com.arcmaksim.weatherapp.presentation.dailyforecast.DailyForecastDestination
+import com.arcmaksim.weatherapp.presentation.dailyforecast.DailyForecastArgs
 import com.arcmaksim.weatherapp.presentation.dailyforecast.DailyForecastScreen
-import com.arcmaksim.weatherapp.presentation.hourlyforecast.HourlyForecastDestination
+import com.arcmaksim.weatherapp.presentation.hourlyforecast.HourlyForecastArgs
 import com.arcmaksim.weatherapp.presentation.hourlyforecast.HourlyForecastScreen
+import com.arcmaksim.weatherapp.presentation.model.toArgsDto
+import com.arcmaksim.weatherapp.presentation.model.toEntity
 
 @Composable
 fun WeatherApp() {
     val navController = rememberNavController()
+
+    val navigationComponent = DaggerNavigationComponent.create()
+
+    val currentForecastRoute = navigationComponent.getCurrentForecastRoute()
+    val hourlyForecastRoute = navigationComponent.getHourlyForecastRoute()
+    val dailyForecastRoute = navigationComponent.getDailyForecastRoute()
+
     NavHost(
         navController,
-        startDestination = CurrentForecastDestination.route,
+        startDestination = currentForecastRoute.route,
     ) {
-        composable(route = CurrentForecastDestination.route) {
+        composable(currentForecastRoute.route) {
             val viewModel: ICurrentForecastViewModel = daggerViewModel {
                 DaggerForecastComponent.create().getCurrentForecastViewModel()
             }
@@ -28,39 +37,33 @@ fun WeatherApp() {
             CurrentForecastScreen(
                 viewModel = viewModel,
                 showHourlyForecast = { timezone, records ->
-                    navController.navigate(
-                        DailyForecastDestination.getDestination(
-                            timezone, records.toTypedArray(),
-                        )
+                    dailyForecastRoute.navigateTo(
+                        navController,
+                        DailyForecastArgs(timezone, records.map { it.toArgsDto() })
                     )
                 },
                 showDailyForecast = { timezone, records ->
-                    navController.navigate(
-                        HourlyForecastDestination.getDestination(
-                            timezone, records.toTypedArray(),
-                        )
+                    hourlyForecastRoute.navigateTo(
+                        navController,
+                        HourlyForecastArgs(timezone, records.map { it.toArgsDto() })
                     )
                 }
             )
         }
 
-        composable(
-            route = HourlyForecastDestination.route,
-        ) {
-            val args = DailyForecastDestination.parseArguments(it)
+        composable(dailyForecastRoute.baseRoute) { entry ->
+            val args = dailyForecastRoute.parseArguments(entry)
             DailyForecastScreen(
                 args.timezone,
-                args.records.toList(),
+                args.records.map { it.toEntity() },
             )
         }
 
-        composable(
-            route = DailyForecastDestination.route,
-        ) {
-            val args = DailyForecastDestination.parseArguments(it)
+        composable(hourlyForecastRoute.baseRoute) { entry ->
+            val args = hourlyForecastRoute.parseArguments(entry)
             HourlyForecastScreen(
                 args.timezone,
-                args.records.toList(),
+                args.records.map { it.toEntity() },
             )
         }
     }
