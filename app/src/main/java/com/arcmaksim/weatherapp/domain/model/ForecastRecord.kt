@@ -1,11 +1,8 @@
 package com.arcmaksim.weatherapp.domain.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.TimeZone
 
-@Parcelize
 class ForecastRecord(
     val time: Long,
     val summary: String,
@@ -16,7 +13,7 @@ class ForecastRecord(
     val humidity: Int,
     val windSpeed: Int,
     val windGust: Int,
-) : Parcelable {
+) {
 
     fun getFormattedTime(
         timezone: String,

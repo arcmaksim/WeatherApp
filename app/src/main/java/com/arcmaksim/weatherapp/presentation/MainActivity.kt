@@ -1,6 +1,21 @@
 package com.arcmaksim.weatherapp.presentation
 
+import android.os.Bundle
+import androidx.activity.compose.setContent
+import androidx.compose.material.MaterialTheme
 import androidx.fragment.app.FragmentActivity
-import com.arcmaksim.weatherapp.R
 
-class MainActivity : FragmentActivity(R.layout.activity_main)
+class MainActivity : FragmentActivity() {
+
+    override fun onCreate(
+        savedInstanceState: Bundle?,
+    ) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                WeatherApp()
+            }
+        }
+    }
+
+}
