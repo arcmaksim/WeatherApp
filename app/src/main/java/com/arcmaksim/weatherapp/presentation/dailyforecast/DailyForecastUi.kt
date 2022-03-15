@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -87,9 +86,7 @@ fun DailyForecastLine(
         Text(
             text = day.temperature.toString(),
             color = Color.White,
-            style = TextStyle(
-                fontSize = 24.sp,
-            ),
+            fontSize = 24.sp,
         )
         Icon(
             modifier = Modifier.padding(start = 10.dp),
@@ -104,9 +101,7 @@ fun DailyForecastLine(
             text = day.getDayOfTheWeek(timezone),
             textAlign = TextAlign.End,
             color = Color.White,
-            style = TextStyle(
-                fontSize = 20.sp,
-            ),
+            fontSize = 20.sp,
         )
     }
 }

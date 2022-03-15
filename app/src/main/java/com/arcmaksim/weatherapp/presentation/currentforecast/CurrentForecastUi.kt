@@ -2,15 +2,21 @@ package com.arcmaksim.weatherapp.presentation.currentforecast
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -19,7 +25,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -53,7 +58,27 @@ fun CurrentForecastScreen(
     )
 
     state.error?.let {
-        //alertUserAboutError()
+        AlertDialog(
+            title = {
+                Text(text = stringResource(R.string.error_title))
+            },
+            text = {
+                Text(text = stringResource(R.string.error_message))
+            },
+            onDismissRequest = viewModel::dismissError,
+            buttons = {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp),
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    TextButton(
+                        onClick = viewModel::dismissError,
+                    ) {
+                        Text(text = stringResource(R.string.error_ok_button_text))
+                    }
+                }
+            }
+        )
     }
 }
 
@@ -121,9 +146,7 @@ fun CurrentForecast(
             },
             text = forecast?.current?.temperature?.toString() ?: stringResource(R.string.default_number_label),
             color = Color.White,
-            style = TextStyle(
-                fontSize = 150.sp,
-            ),
+            fontSize = 150.sp,
         )
         Icon(
             modifier = Modifier.constrainAs(temperatureIconRef) {
@@ -148,9 +171,7 @@ fun CurrentForecast(
                 forecast?.current?.getFormattedTime(forecast.timezone) ?: stringResource(R.string.default_time_label),
             ),
             color = Color(0x80FFFFFF),
-            style = TextStyle(
-                fontSize = 18.sp,
-            ),
+            fontSize = 18.sp,
         )
         Text(
             modifier = Modifier.constrainAs(locationRef) {
@@ -160,9 +181,7 @@ fun CurrentForecast(
             },
             text = stringResource(R.string.default_location_label),
             color = Color(0x80FFFFFF),
-            style = TextStyle(
-                fontSize = 18.sp,
-            ),
+            fontSize = 18.sp,
         )
         forecast?.let {
             Icon(
@@ -198,9 +217,7 @@ fun CurrentForecast(
             text = forecast?.current?.humidity?.toString() ?: stringResource(R.string.default_number_label),
             color = Color.White,
             textAlign = TextAlign.Center,
-            style = TextStyle(
-                fontSize = 24.sp,
-            ),
+            fontSize = 24.sp,
         )
         Text(
             modifier = Modifier.constrainAs(precipLabelRef) {
@@ -224,9 +241,7 @@ fun CurrentForecast(
                 ?: stringResource(R.string.default_number_label),
             color = Color.White,
             textAlign = TextAlign.Center,
-            style = TextStyle(
-                fontSize = 24.sp,
-            ),
+            fontSize = 24.sp,
         )
 
         val barrier = createBottomBarrier(humidityValueRef, precipValueRef)
@@ -240,9 +255,7 @@ fun CurrentForecast(
             text = forecast?.current?.summary ?: stringResource(R.string.default_summary),
             color = Color.White,
             textAlign = TextAlign.Center,
-            style = TextStyle(
-                fontSize = 18.sp,
-            ),
+            fontSize = 18.sp,
         )
 
         val (hourlyButtonRef, dailyButtonRef) = createRefs()
@@ -268,7 +281,7 @@ fun CurrentForecast(
         ) {
             Text(
                 color = Color.White,
-                text = "HOURLY",
+                text = stringResource(R.string.hourly_forecast),
             )
         }
 
@@ -288,13 +301,13 @@ fun CurrentForecast(
             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
             onClick = {
                 forecast?.let {
-                    showDailyForecast(it.timezone, it.hourlyForecast.records)
+                    showDailyForecast(it.timezone, it.dailyForecast.records)
                 }
             },
         ) {
             Text(
                 color = Color.White,
-                text = "7 DAYS",
+                text = stringResource(R.string.daily_forecast),
             )
         }
     }
@@ -367,6 +380,8 @@ fun CurrentForecastPreview() {
         override fun getForecast(
             isRefreshing: Boolean,
         ) = Unit
+
+        override fun dismissError() = Unit
     }
 
     MaterialTheme {

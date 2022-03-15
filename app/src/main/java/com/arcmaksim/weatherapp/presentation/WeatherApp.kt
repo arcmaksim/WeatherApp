@@ -37,15 +37,15 @@ fun WeatherApp() {
             CurrentForecastScreen(
                 viewModel = viewModel,
                 showHourlyForecast = { timezone, records ->
-                    dailyForecastRoute.navigateTo(
-                        navController,
-                        DailyForecastArgs(timezone, records.map { it.toArgsDto() })
-                    )
-                },
-                showDailyForecast = { timezone, records ->
                     hourlyForecastRoute.navigateTo(
                         navController,
                         HourlyForecastArgs(timezone, records.map { it.toArgsDto() })
+                    )
+                },
+                showDailyForecast = { timezone, records ->
+                    dailyForecastRoute.navigateTo(
+                        navController,
+                        DailyForecastArgs(timezone, records.map { it.toArgsDto() })
                     )
                 }
             )

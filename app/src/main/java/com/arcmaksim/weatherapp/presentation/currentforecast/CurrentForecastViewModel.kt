@@ -51,4 +51,12 @@ class CurrentForecastViewModel @Inject constructor(
         }
     }
 
+    override fun dismissError() {
+        state.update {
+            it.copy(
+                error = null,
+            )
+        }
+    }
+
 }

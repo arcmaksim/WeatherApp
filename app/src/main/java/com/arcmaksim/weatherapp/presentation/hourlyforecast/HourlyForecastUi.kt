@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -79,9 +78,7 @@ fun HourlyForecastLine(
             modifier = Modifier.width(80.dp),
             text = hour.getFormattedTime(timezone),
             color = Color.White,
-            style = TextStyle(
-                fontSize = 24.sp,
-            ),
+            fontSize = 24.sp,
         )
         Icon(
             painter = painterResource(hour.type.toIconResId()),
@@ -94,16 +91,12 @@ fun HourlyForecastLine(
                 .padding(horizontal = 15.dp),
             text = hour.summary,
             color = Color.White,
-            style = TextStyle(
-                fontSize = 14.sp,
-            ),
+            fontSize = 14.sp,
         )
         Text(
             text = "${hour.temperature}",
             color = Color.White,
-            style = TextStyle(
-                fontSize = 24.sp,
-            ),
+            fontSize = 24.sp,
         )
     }
 }

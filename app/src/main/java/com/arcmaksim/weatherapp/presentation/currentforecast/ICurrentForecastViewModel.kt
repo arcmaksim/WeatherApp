@@ -10,4 +10,6 @@ interface ICurrentForecastViewModel {
         isRefreshing: Boolean,
     )
 
+    fun dismissError()
+
 }
